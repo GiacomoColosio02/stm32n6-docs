@@ -107,132 +107,129 @@ $(document).ready(function(){initNavTree('toolchain_page.html',''); initResizabl
     detailed code explanation in Part 2 and Part 3.
   </p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <div style="background:rgba(56,161,105,0.2);border:1px solid #38a169;
-                border-radius:6px;padding:7px 14px;">
+    <a href="toolchain_modelzoo.html" style="background:rgba(56,161,105,0.2);border:1px solid #38a169;
+                border-radius:6px;padding:7px 14px;text-decoration:none;display:block;">
       <span style="color:#68d391;font-weight:700;font-size:0.82em;">ST Model Zoo</span>
-    </div>
-    <div style="background:rgba(99,179,237,0.2);border:1px solid #63b3ed;
-                border-radius:6px;padding:7px 14px;">
+    </a>
+
+    <a href="toolchain_services.html" style="background:rgba(99,179,237,0.2);border:1px solid #63b3ed;
+                border-radius:6px;padding:7px 14px;text-decoration:none;display:block;">
       <span style="color:#90cdf4;font-weight:700;font-size:0.82em;">ModelZoo Services</span>
-    </div>
-    <div style="background:rgba(233,69,96,0.2);border:1px solid #e94560;
-                border-radius:6px;padding:7px 14px;">
+    </a>
+
+    <a href="toolchain_edgeai.html" style="background:rgba(233,69,96,0.2);border:1px solid #e94560;
+                border-radius:6px;padding:7px 14px;text-decoration:none;display:block;">
       <span style="color:#fc8181;font-weight:700;font-size:0.82em;">ST Edge AI Core</span>
-    </div>
-    <div style="background:rgba(214,158,46,0.2);border:1px solid #d69e2e;
-                border-radius:6px;padding:7px 14px;">
+    </a>
+
+    <a href="toolchain_cubeide.html" style="background:rgba(214,158,46,0.2);border:1px solid #d69e2e;
+                border-radius:6px;padding:7px 14px;text-decoration:none;display:block;">
       <span style="color:#f6e05e;font-weight:700;font-size:0.82em;">STM32CubeIDE</span>
-    </div>
+    </a>
   </div>
 </div>
 
 
-<!-- ═══════════════════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════════════════
      KEY INSIGHT BOX
 ════════════════════════════════════════════════════════════ -->
-<div style="background:#1a1a2e;color:#e2e8f0;padding:28px 32px;
+  <div style="background:#1a1a2e;color:#e2e8f0;padding:28px 32px;
             border-radius:10px;margin-bottom:40px;
             border-left:5px solid #38b2ac;">
-  <div style="color:#38b2ac;font-weight:700;font-size:0.85em;
+    <div style="color:#38b2ac;font-weight:700;font-size:0.85em;
               letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">
-    Key Insight — Keep this in mind
-  </div>
-  <p style="font-size:1em;line-height:1.8;margin:0 0 14px 0;">
-    Before diving into the tools, there is one idea that ties everything together:
-    the <strong style="color:#68d391;">division of labor between Python and C</strong>.
-  </p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div style="background:rgba(99,179,237,0.1);border:1px solid #63b3ed;
+      Key Insight — Keep this in mind
+    </div>
+    <p style="font-size:1em;line-height:1.8;margin:0 0 14px 0;">
+      Before diving into the tools, there is one idea that ties everything together:
+      the <strong style="color:#68d391;">division of labor between Python and C</strong>.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:rgba(99,179,237,0.1);border:1px solid #63b3ed;
                 border-radius:8px;padding:16px;">
-      <div style="color:#90cdf4;font-weight:700;margin-bottom:8px;">
-        &#128013; Python — Host side
+        <div style="color:#90cdf4;font-weight:700;margin-bottom:8px;">
+          🐍 Python — Host side
+        </div>
+        <div style="color:#a0aec0;font-size:0.9em;line-height:1.7;">
+          Handles <strong style="color:#e2e8f0;">training, quantization, and evaluation</strong>.
+          Runs on your laptop. Produces the optimized and quantized model files
+          (.tflite, .onnx) ready for conversion.
+        </div>
       </div>
-      <div style="color:#a0aec0;font-size:0.9em;line-height:1.7;">
-        Handles <strong style="color:#e2e8f0;">training, quantization, and evaluation</strong>.
-        Runs on your laptop. Produces a quantized model file (.tflite, .onnx)
-        and generates the C configuration header.
+      <div style="background:rgba(233,69,96,0.1);border:1px solid #e94560;
+                border-radius:8px;padding:16px;">
+        <div style="color:#fc8181;font-weight:700;margin-bottom:8px;">
+          ⚡ C — Board side
+        </div>
+        <div style="color:#a0aec0;font-size:0.9em;line-height:1.7;">
+          The <strong style="color:#e2e8f0;">C project is what actually runs on the board</strong>.
+          ST Edge AI Core generates the C arrays and configuration headers from the Python model,
+          which are then compiled by STM32CubeIDE and flashed via ST-Link.
+        </div>
       </div>
     </div>
-    <div style="background:rgba(233,69,96,0.1);border:1px solid #e94560;
-                border-radius:8px;padding:16px;">
-      <div style="color:#fc8181;font-weight:700;margin-bottom:8px;">
-        &#9889; C — Board side
-      </div>
-      <div style="color:#a0aec0;font-size:0.9em;line-height:1.7;">
-        The <strong style="color:#e2e8f0;">C project is what actually runs on the board</strong>.
-        Compiled by STM32CubeIDE from C code generated by ST Edge AI Core,
-        then flashed via ST-Link.
-      </div>
-    </div>
   </div>
-</div>
 
-
-<!-- ═══════════════════════════════════════════════════════
-     SECTION INTRO
-════════════════════════════════════════════════════════════ -->
-<h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION INTRO
+  ════════════════════════════════════════════════════════════ -->
+  <h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:20px;">
-  What this chapter covers
-</h2>
+    Chapter Scope
+  </h2>
 
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  Now that we understand the hardware platform — the STM32N6570-DK, its Neural-ART NPU,
-  and its memory hierarchy — we can turn to the software side and understand
-  all the steps required to deploy a neural network firmware on the board.
-</p>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  For each tool we will look at what it contains (code, models, configuration files),
-  how it is used in practice, and — crucially — we will link directly to the
-  detailed code explanations in
-  <a href="part2_page.html"><strong>Part 2 — Code Reference</strong></a> and
-  <a href="part3_page.html"><strong>Part 3 — Module Groups</strong></a>,
-  where every function is documented line by line.
-</p>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:32px;">
-  This chapter is structured in three parts, mirroring the division of labor
-  described above:
-</p>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    Having examined the hardware platform (the STM32N6570-DK, its Neural-ART NPU
+    and its memory hierarchy) this section transitions to the software toolchain to detail
+    the deployment workflow for neural network firmware.
+  </p>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    Each tool is analyzed based on its role, required configuration files, and practical usage.
+    Direct links are provided to the corresponding source code documentation in
+    <a href="part2_page.html"><strong>Part 2 — Code Reference</strong></a> and
+    <a href="part3_page.html"><strong>Part 3 — Module Groups</strong></a>,
+    where individual functions are analyzed line-by-line.
+  </p>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:32px;">
+    This chapter is structured into three parts, reflecting the logical division of the deployment pipeline:
+  </p>
 
-<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:40px;">
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:40px;">
 
-  <div style="background:#f0f7ff;border:1px solid #4299e1;border-left:4px solid #4299e1;
+    <div style="background:#f0f7ff;border:1px solid #4299e1;border-left:4px solid #4299e1;
               border-radius:0 8px 8px 0;padding:16px 20px;">
-    <div style="font-weight:700;color:#2b6cb0;margin-bottom:4px;">
-      Part A &mdash; Python Pipeline
+      <div style="font-weight:700;color:#2b6cb0;margin-bottom:4px;">
+        Part A &mdash; Python Pipeline
+      </div>
+      <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
+        <strong>ST Model Zoo and ModelZoo Services:</strong> Covers model sourcing, post-training INT8 quantization,
+        and pipeline orchestration using a centralized YAML configuration file.
+      </div>
     </div>
-    <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
-      The ST Model Zoo and ModelZoo Services: where models come from,
-      how they are quantized, and how the Python scripts orchestrate the
-      entire pipeline from a single YAML configuration file.
-    </div>
-  </div>
 
-  <div style="background:#fff5f5;border:1px solid #e94560;border-left:4px solid #e94560;
+    <div style="background:#fff5f5;border:1px solid #e94560;border-left:4px solid #e94560;
               border-radius:0 8px 8px 0;padding:16px 20px;">
-    <div style="font-weight:700;color:#c53030;margin-bottom:4px;">
-      Part B &mdash; ST Edge AI Core
+      <div style="font-weight:700;color:#c53030;margin-bottom:4px;">
+        Part B &mdash; ST Edge AI Core
+      </div>
+      <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
+        <strong>The Neural-ART Compiler:</strong> Translates quantized <code>.tflite</code>/<code>.onnx</code> models into hardware-optimized C arrays.
+        It assigns operational steps (NPU epochs), generates memory pool (<code>.mpool</code>) mappings, and outputs profiling reports to bridge the Python-to-C gap.
+      </div>
     </div>
-    <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
-      The converter tool that takes a quantized Python model and produces
-      optimised C arrays, NPU epoch assignments, and a detailed profiling report.
-      This is the bridge between Python and C.
-    </div>
-  </div>
 
-  <div style="background:#fffbea;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
+    <div style="background:#fffbea;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
               border-radius:0 8px 8px 0;padding:16px 20px;">
-    <div style="font-weight:700;color:#92400e;margin-bottom:4px;">
-      Part C &mdash; STM32CubeIDE &amp; C Firmware
+      <div style="font-weight:700;color:#92400e;margin-bottom:4px;">
+        Part C &mdash; STM32CubeIDE &amp; C Firmware
+      </div>
+      <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
+        <strong>Compilation and Board Deployment:</strong> STM32CubeIDE compiles the generated C project and flashes it via ST-Link.
+        This section details the firmware components and inference loops executing natively on the STM32N6570-DK.
+      </div>
     </div>
-    <div style="color:#4a5568;font-size:0.88em;line-height:1.6;">
-      The IDE that compiles the generated C project and flashes it to the board.
-      Here we look at the C files that actually run on the STM32N6570-DK.
-    </div>
+
   </div>
-
-</div>
-
 
 <!-- ═══════════════════════════════════════════════════════
      PIPELINE OVERVIEW
@@ -243,8 +240,8 @@ $(document).ready(function(){initNavTree('toolchain_page.html',''); initResizabl
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:24px;">
-  The complete deployment pipeline is composed of four distinct software components,
-  each responsible for a specific phase. They always execute in this exact order:
+  The complete deployment pipeline consists of four distinct software components,
+  each responsible for a specific phase of the workflow. These components execute in a strict sequential order:
 </p>
 
 <!-- Pipeline diagram -->
@@ -341,108 +338,95 @@ $(document).ready(function(){initNavTree('toolchain_page.html',''); initResizabl
 </div>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  Notice the dashed vertical line in the diagram above.
-  Everything to the left runs on your <strong>laptop in Python</strong>.
-  Everything to the right produces and runs <strong>C code on the board</strong>.
-  ST Edge AI Core sits exactly at the boundary: it takes a Python model as input
-  and produces C source files as output.
+  The dashed vertical line in the diagram denotes the conceptual boundary between the Machine Learning environment and the Embedded Software environment.
+  Crucially, all four toolchain components execute on the host machine. The Python ecosystem (left) governs model design, training, and INT8 quantization. The C ecosystem (right) handles the hardware-specific translation of the model into C arrays via ST Edge AI Core, followed by cross-compilation within STM32CubeIDE. Only the resulting binary executable is flashed to and executed natively on the STM32N6570-DK hardware.
 </p>
 
 
-<!-- ═══════════════════════════════════════════════════════
-     COMPONENT CARDS — navigate to subpages
-════════════════════════════════════════════════════════════ -->
-<h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
+  <!-- ═══════════════════════════════════════════════════════
+       COMPONENT CARDS — navigate to subpages
+  ════════════════════════════════════════════════════════════ -->
+  <h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:24px;">
-  Explore each component in detail
-</h2>
+    Component Analysis
+  </h2>
 
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:24px;">
-  Each component has its own dedicated page. For each one we examine:
-  the repository structure, the key files, how it is configured and invoked,
-  and direct links to the annotated source code in Part 2.
-</p>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:24px;">
+    Each toolchain component is documented on a dedicated subpage. The analysis encompasses repository structures, core files, configuration parameters and execution methodologies.
+  </p>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;">
 
-  <a href="toolchain_modelzoo.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;
+    <a href="toolchain_modelzoo.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;
               border-top:4px solid #38a169;border-radius:10px;
               padding:22px;transition:box-shadow .2s;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:1.8em;">&#128218;</span>
-      <div>
-        <div style="font-weight:700;color:#276749;font-size:1em;">3.1 — ST Model Zoo</div>
-        <div style="color:#718096;font-size:0.8em;">github.com/STMicroelectronics/stm32ai-modelzoo</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:1.8em;">&#128218;</span>
+          <div>
+            <div style="font-weight:700;color:#276749;font-size:1em;">3.1 — ST Model Zoo</div>
+            <div style="color:#718096;font-size:0.8em;">github.com/STMicroelectronics/stm32ai-modelzoo</div>
+          </div>
+        </div>
+        <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
+          The official GitHub repository providing pre-trained and validated neural network models optimized for STM32 deployment. It includes architectures for object detection, pose estimation and image classification, serving as the source for the MoveNet Lightning model.
+        </p>
+        <div style="color:#38a169;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
       </div>
-    </div>
-    <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
-      The public repository of pre-trained, validated models for STM32 deployment.
-      Covers object detection, pose estimation, image classification and more.
-      This is where MoveNet Lightning was sourced.
-    </p>
-    <div style="color:#38a169;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
-  </div>
-  </a>
+    </a>
 
-  <a href="toolchain_services.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;
+    <a href="toolchain_services.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;
               border-top:4px solid #4299e1;border-radius:10px;padding:22px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:1.8em;">&#128736;</span>
-      <div>
-        <div style="font-weight:700;color:#2b6cb0;font-size:1em;">3.2 — ModelZoo Services</div>
-        <div style="color:#718096;font-size:0.8em;">Python pipeline + user_config.yaml</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:1.8em;">&#128736;</span>
+          <div>
+            <div style="font-weight:700;color:#2b6cb0;font-size:1em;">3.2 — ModelZoo Services</div>
+            <div style="color:#718096;font-size:0.8em;">Python pipeline + user_config.yaml</div>
+          </div>
+        </div>
+        <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
+          The Python-based framework automating the end-to-end machine learning workflow, encompassing training, INT8 quantization, evaluation and NPU benchmarking. Execution is strictly controlled via a centralized <code>user_config.yaml</code> file, orchestrating all Python scripts detailed in Part 2.
+        </p>
+        <div style="color:#4299e1;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
       </div>
-    </div>
-    <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
-      The Python framework that automates every step: training, quantization,
-      evaluation, benchmarking, deployment. A single YAML file controls everything.
-      All Python source files in Part 2 belong here.
-    </p>
-    <div style="color:#4299e1;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
-  </div>
-  </a>
+    </a>
 
-  <a href="toolchain_edgeai.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;
+    <a href="toolchain_edgeai.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;
               border-top:4px solid #e94560;border-radius:10px;padding:22px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:1.8em;">&#9889;</span>
-      <div>
-        <div style="font-weight:700;color:#c53030;font-size:1em;">3.3 — ST Edge AI Core</div>
-        <div style="color:#718096;font-size:0.8em;">stedgeai CLI + NPU Add-on</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:1.8em;">&#9889;</span>
+          <div>
+            <div style="font-weight:700;color:#c53030;font-size:1em;">3.3 — ST Edge AI Core</div>
+            <div style="color:#718096;font-size:0.8em;">stedgeai CLI + NPU Add-on</div>
+          </div>
+        </div>
+        <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
+          The proprietary ST compiler facilitating the transition from the Python environment to embedded C. It ingests quantized <code>.tflite</code> or <code>.onnx</code> models, generates optimized C arrays, schedules layer execution across the Neural-ART NPU and CPU and produces comprehensive memory and latency profiling reports.
+        </p>
+        <div style="color:#e94560;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
       </div>
-    </div>
-    <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
-      The converter tool. Takes a quantized .tflite or .onnx model and produces
-      optimised C arrays, assigns layers to NPU or CPU epochs, and generates
-      a detailed profiling report. The Python-to-C bridge.
-    </p>
-    <div style="color:#e94560;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
-  </div>
-  </a>
+    </a>
 
-  <a href="toolchain_cubeide.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;
+    <a href="toolchain_cubeide.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;
               border-top:4px solid #d69e2e;border-radius:10px;padding:22px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <span style="font-size:1.8em;">&#128268;</span>
-      <div>
-        <div style="font-weight:700;color:#92400e;font-size:1em;">3.4 — STM32CubeIDE &amp; C Firmware</div>
-        <div style="color:#718096;font-size:0.8em;">compile + flash + C source files</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:1.8em;">&#128268;</span>
+          <div>
+            <div style="font-weight:700;color:#92400e;font-size:1em;">3.4 — STM32CubeIDE &amp; C Firmware</div>
+            <div style="color:#718096;font-size:0.8em;">compile + flash + C source files</div>
+          </div>
+        </div>
+        <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
+          The integrated development environment utilized for cross-compiling the generated C project and flashing the binary to the STM32N6570-DK via ST-Link. This section analyzes the C firmware components responsible for executing the real-time inference loop on the target hardware.
+        </p>
+        <div style="color:#d69e2e;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
       </div>
-    </div>
-    <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0 0 14px 0;">
-      The IDE invoked automatically by the Python script to compile the C project
-      and flash it to the board via ST-Link. Here we also examine the C firmware
-      files that implement the real-time inference loop on the STM32N6570-DK.
-    </p>
-    <div style="color:#d69e2e;font-weight:700;font-size:0.85em;">Read more &rarr;</div>
-  </div>
-  </a>
+    </a>
 
-</div>
+  </div>
 
 
 <!-- ═══════════════════════════════════════════════════════
