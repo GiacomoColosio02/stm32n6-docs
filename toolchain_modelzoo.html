@@ -101,9 +101,8 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
     Where the models come from
   </h1>
   <p style="color:#a0aec0;font-size:0.95em;line-height:1.7;margin:0 0 20px 0;max-width:600px;">
-    The ST Model Zoo is a public GitHub repository maintained by STMicroelectronics
-    containing a curated collection of pre-trained neural network models,
-    all validated for deployment on STM32 devices.
+    The ST Model Zoo is the official, open-source GitHub repository maintained by STMicroelectronics.
+    It provides a curated collection of pre-trained machine learning models, training scripts and evaluation pipelines, all rigorously validated for optimized deployment across the STM32 ecosystem.
   </p>
   <a href="https://github.com/STMicroelectronics/stm32ai-modelzoo" target="_blank"
      style="background:rgba(56,161,105,0.3);border:1px solid #38a169;color:#68d391;
@@ -117,20 +116,16 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
 <!-- WHAT IT IS -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  What it is — and why it matters
+  Purpose and Practical Utility
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  Training a neural network from scratch requires large datasets, powerful GPUs,
-  and days of computation. For most embedded AI projects — including this one —
-  this is neither necessary nor practical. The Model Zoo solves this by providing
-  models that are already <strong>trained, quantized, and validated</strong> on
-  reference STM32 hardware. You download the model file and proceed directly
-  to deployment.
+  Training a neural network architecture from scratch necessitates extensive datasets, high-performance GPU (or TPU) clusters and significant computational time.
+  Within the context of embedded machine learning workflows, this approach is frequently inefficient.
+  The ST Model Zoo mitigates this bottleneck by supplying models that are already <strong>trained, quantized and validated</strong> against reference STM32 hardware.
+  This allows developers to bypass the training phase and transition directly to hardware-specific compilation and deployment.
 </p>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  As of release 4.0, the Model Zoo supports three frameworks —
-  <strong>TensorFlow, PyTorch, and ONNX</strong> — and provides performance
-  benchmarks on both MCU and MPU targets for every model.
+  As of Release 4.0, the repository natively supports three primary deep learning frameworks: <strong>TensorFlow, PyTorch and ONNX</strong> and provides comprehensive latency, memory footprint and accuracy benchmarks across both Microcontroller (MCU) and Microprocessor (MPU) target platforms.
 </p>
 
 <!-- WHAT'S NEW -->
@@ -139,132 +134,129 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
   <strong style="color:#276749;">What&rsquo;s new in release 4.0 (latest):</strong>
   <ul style="color:#2f855a;font-size:0.87em;line-height:1.8;
              margin:8px 0 0 0;padding-left:20px;">
-    <li>Major <strong>PyTorch support</strong> for Image Classification and Object Detection</li>
-    <li>Support of <strong>STEdgeAI Core v3.0.0</strong></li>
-    <li>New use cases: Face Detection, Arc Fault Detection, Re-Identification</li>
-    <li>Mixed precision models (Weights 4-bit, Activations 8-bit)</li>
-    <li>Support for Keras 3.8.0, TensorFlow 2.18.0, PyTorch 2.7.1, ONNX 1.16.1</li>
-    <li>Docker-based setup with ready-to-use image including the full software stack</li>
+    <li>Comprehensive <strong>PyTorch support</strong> introduced for Image Classification and Object Detection pipelines.</li>
+    <li>Full integration with the <strong>STEdgeAI Core v3.0.0</strong> compiler.</li>
+    <li>Expansion of reference use cases: Face Detection, Arc Fault Detection and Re-Identification.</li>
+    <li>Introduction of mixed-precision quantization models (4-bit Weights, 8-bit Activations).</li>
+    <li>Updated framework compatibility matrices: Keras 3.8.0, TensorFlow 2.18.0, PyTorch 2.7.1 and ONNX 1.16.1.</li>
+    <li>Implementation of a Docker-based environment, providing a ready-to-use containerized software stack.</li>
   </ul>
 </div>
 
-
-<!-- REPOSITORY STRUCTURE -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- REPOSITORY STRUCTURE -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Repository structure
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The repository is organised by <strong>application domain</strong>.
-  Each folder contains multiple model architectures, each pre-trained on public datasets.
-  Within each domain, models are further organised by training source.
-</p>
+    Repository Architecture
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    The repository is organized hierarchically by <strong>application domain</strong>.
+    Each top-level directory encapsulates multiple neural network architectures pre-trained on established datasets.
+    Within each domain, models are further classified based on their training provenance and dataset origin.
+  </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:20px 24px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:20px 24px;
             font-family:monospace;font-size:0.84em;line-height:1.9;
             color:#e2e8f0;margin-bottom:20px;">
-  <span style="color:#68d391;font-weight:700;">stm32ai-modelzoo/</span><br/>
-  ├── arc_fault_detection/<br/>
-  ├── audio_event_detection/<br/>
-  ├── depth_estimation/<br/>
-  ├── face_detection/<br/>
-  ├── hand_posture/<br/>
-  ├── human_activity_recognition/<br/>
-  ├── image_classification/<br/>
-  ├── instance_segmentation/<br/>
-  ├── neural_style_transfer/<br/>
-  ├── object_detection/<br/>
-  ├── <span style="color:#fbd38d;font-weight:700;">pose_estimation/</span>
-  &nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; used in this project</span><br/>
-  │&nbsp;&nbsp; ├── handlandmarks/<br/>
-  │&nbsp;&nbsp; ├── headlandmarks/<br/>
-  │&nbsp;&nbsp; ├── <span style="color:#fc8181;font-weight:700;">movenet/</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; MoveNet Lightning lives here</span><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── ST_pretrainedmodel_public_dataset/<br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── ST_pretrainedmodel_custom_dataset/<br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; └── Public_pretrainedmodel_custom_dataset/<br/>
-  │&nbsp;&nbsp; ├── yolov8n_pose/<br/>
-  │&nbsp;&nbsp; └── yolov11n_pose/<br/>
-  ├── re_identification/<br/>
-  ├── semantic_segmentation/<br/>
-  └── speech_enhancement/
-</div>
+    <span style="color:#68d391;font-weight:700;">stm32ai-modelzoo/</span><br/>
+    ├── arc_fault_detection/<br/>
+    ├── audio_event_detection/<br/>
+    ├── depth_estimation/<br/>
+    ├── face_detection/<br/>
+    ├── hand_posture/<br/>
+    ├── human_activity_recognition/<br/>
+    ├── image_classification/<br/>
+    ├── instance_segmentation/<br/>
+    ├── neural_style_transfer/<br/>
+    ├── object_detection/<br/>
+    ├── <span style="color:#fbd38d;font-weight:700;">pose_estimation/</span>
+    &nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Focus of this deployment</span><br/>
+    │&nbsp;&nbsp; ├── handlandmarks/<br/>
+    │&nbsp;&nbsp; ├── headlandmarks/<br/>
+    │&nbsp;&nbsp; ├── <span style="color:#fc8181;font-weight:700;">movenet/</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; MoveNet Lightning architecture</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── ST_pretrainedmodel_public_dataset/<br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── ST_pretrainedmodel_custom_dataset/<br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; └── Public_pretrainedmodel_public_dataset/<br/>
+    │&nbsp;&nbsp; ├── yolov8n_pose/<br/>
+    │&nbsp;&nbsp; └── yolov11n_pose/<br/>
+    ├── re_identification/<br/>
+    ├── semantic_segmentation/<br/>
+    └── speech_enhancement/
+  </div>
 
-<!-- Subfolder table -->
-<div style="overflow-x:auto;margin-bottom:28px;">
-<table style="width:100%;border-collapse:collapse;font-size:0.88em;">
-  <thead>
-    <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:10px 14px;text-align:left;">Subfolder</th>
-      <th style="padding:10px 14px;text-align:left;">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="border-bottom:1px solid #e2e8f0;">
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
+  <!-- Subfolder table -->
+  <div style="overflow-x:auto;margin-bottom:28px;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
+      <thead>
+      <tr style="background:#1a1a2e;color:white;">
+        <th style="padding:10px 14px;text-align:left;">Subdirectory Nomenclature</th>
+        <th style="padding:10px 14px;text-align:left;">Architectural Provenance</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
                  color:#276749;">ST_pretrainedmodel_public_dataset</td>
-      <td style="padding:10px 14px;color:#4a5568;">
-        Models trained by ST on public datasets (e.g. COCO). Best validated option.
-      </td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
+        <td style="padding:10px 14px;color:#4a5568;">
+          Models trained internally by STMicroelectronics utilizing standardized public datasets (e.g., COCO). Represents the most rigorously validated baseline for deployment.
+        </td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
                  color:#2b6cb0;">ST_pretrainedmodel_custom_dataset</td>
-      <td style="padding:10px 14px;color:#4a5568;">
-        Models trained by ST on custom / proprietary datasets.
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
+        <td style="padding:10px 14px;color:#4a5568;">
+          Models trained by STMicroelectronics leveraging proprietary or use-case-specific datasets.
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;
                  color:#92400e;">Public_pretrainedmodel_public_dataset</td>
-      <td style="padding:10px 14px;color:#4a5568;">
-        Public models (e.g. Google MoveNet) on public datasets.
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+        <td style="padding:10px 14px;color:#4a5568;">
+          Open-source model architectures (e.g., Google MoveNet) trained on public datasets, provided for benchmarking and direct comparison.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
 <!-- AVAILABLE USE CASES -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Available use cases
+  Supported Application Domains
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The table below shows all supported use cases and which STM32 board is recommended
-  for each. Notice that the <strong>STM32N6570-DK</strong> supports the widest range
-  of use cases — a direct consequence of its Neural-ART NPU.
+  The following table delineates the supported machine learning application domains and their compatibility with the target hardware.
+  The extensive support across varied use cases exhibited by the <strong>STM32N6570-DK</strong> is a direct consequence of the dedicated hardware acceleration provided by its Neural-ART NPU.
 </p>
 
 <div style="overflow-x:auto;margin-bottom:28px;">
 <table style="width:100%;border-collapse:collapse;font-size:0.85em;">
   <thead>
     <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:9px 14px;text-align:left;">Use Case</th>
-      <th style="padding:9px 14px;text-align:left;">Description</th>
-      <th style="padding:9px 14px;text-align:center;">STM32N6570-DK</th>
+      <th style="padding:9px 14px;text-align:left;">Application Domain</th>
+      <th style="padding:9px 14px;text-align:left;">Technical Description</th>
+      <th style="padding:9px 14px;text-align:center;">STM32N6570-DK Compatibility</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:9px 14px;font-weight:600;">Image Classification</td>
-      <td style="padding:9px 14px;color:#4a5568;">Classifies content within predefined classes</td>
+      <td style="padding:9px 14px;color:#4a5568;">Categorizes input imagery into predefined discrete classes</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:9px 14px;font-weight:600;">Object Detection</td>
-      <td style="padding:9px 14px;color:#4a5568;">Detects and locates objects in images</td>
+      <td style="padding:9px 14px;color:#4a5568;">Identifies and bounds multiple object instances within visual data</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#f0fff4;">
       <td style="padding:9px 14px;font-weight:700;color:#276749;">
-        Pose Estimation &#8592; this project
+        Pose Estimation &#8592; Primary Focus
       </td>
       <td style="padding:9px 14px;color:#2f855a;">
-        Detects keypoints on people (hands, face, body)
+        Extracts anatomical keypoints (body, face, hands) for spatial analysis
       </td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="background:#38a169;color:white;padding:2px 8px;
@@ -275,37 +267,37 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:9px 14px;font-weight:600;">Semantic Segmentation</td>
-      <td style="padding:9px 14px;color:#4a5568;">Labels every pixel in an image</td>
+      <td style="padding:9px 14px;color:#4a5568;">Performs dense, pixel-level classification across the image</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:9px 14px;font-weight:600;">Instance Segmentation</td>
-      <td style="padding:9px 14px;color:#4a5568;">Labels pixels per object instance</td>
+      <td style="padding:9px 14px;color:#4a5568;">Differentiates pixel-level boundaries for individual object instances</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:9px 14px;font-weight:600;">Depth Estimation</td>
-      <td style="padding:9px 14px;color:#4a5568;">Pixel-wise depth map from image</td>
+      <td style="padding:9px 14px;color:#4a5568;">Infers spatial distance mapped to a pixel-wise depth matrix</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:9px 14px;font-weight:600;">Neural Style Transfer</td>
-      <td style="padding:9px 14px;color:#4a5568;">Applies artistic style to images</td>
+      <td style="padding:9px 14px;color:#4a5568;">Synthesizes images by merging distinct content and stylistic features</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:9px 14px;font-weight:600;">Speech Enhancement</td>
-      <td style="padding:9px 14px;color:#4a5568;">Audio enhancement in noisy environments</td>
+      <td style="padding:9px 14px;color:#4a5568;">Filters noise to isolate and enhance target audio signals</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:9px 14px;font-weight:600;">Re-Identification</td>
-      <td style="padding:9px 14px;color:#4a5568;">Reidentifies person/object across frames</td>
+      <td style="padding:9px 14px;color:#4a5568;">Tracks and matches unique identities across varying spatial frames</td>
       <td style="padding:9px 14px;text-align:center;">
         <span style="color:#38a169;font-weight:700;">&#10003;</span></td>
     </tr>
@@ -319,22 +311,22 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
             border-left:5px solid #38a169;border-radius:0 10px 10px 0;
             padding:16px 22px;margin-bottom:28px;">
   <div style="font-weight:700;color:#276749;font-size:1em;margin-bottom:8px;">
-    Zoom in: Pose Estimation folder
+    Architectural Deep-Dive: Pose Estimation
   </div>
   <p style="color:#2f855a;font-size:0.9em;line-height:1.7;margin:0 0 10px 0;">
-    The <code>pose_estimation/</code> folder contains five model families:
+    The <code>pose_estimation/</code> directory encapsulates five distinct model architectures, each optimized for specific landmark detection tasks:
   </p>
   <ul style="color:#276749;font-size:0.88em;line-height:1.8;
              padding-left:20px;margin:0;">
-    <li><strong>movenet</strong> — single pose, 13 or 17 keypoints
-        &nbsp;<span style="background:#38a169;color:white;padding:1px 7px;
-                           border-radius:8px;font-size:0.8em;">used in this project</span></li>
-    <li><strong>yolov8n_pose</strong> — multi pose, 17 keypoints (COCO standard)
-        &nbsp;<span style="background:#38a169;color:white;padding:1px 7px;
-                           border-radius:8px;font-size:0.8em;">used in this project</span></li>
-    <li><strong>yolov11n_pose</strong> — multi pose, 17 keypoints (latest YOLO)</li>
-    <li><strong>handlandmarks</strong> — single pose, 21 hand keypoints</li>
-    <li><strong>headlandmarks</strong> — single pose, 468/478 face keypoints</li>
+    <li><strong>movenet</strong> — Single-pose detection, outputting 13 or 17 keypoints
+      &nbsp;<span style="background:#38a169;color:white;padding:1px 7px;
+                           border-radius:8px;font-size:0.8em;">Deployed in this project</span></li>
+    <li><strong>yolov8n_pose</strong> — Multi-pose detection, outputting 17 keypoints (COCO standard)
+      &nbsp;<span style="background:#38a169;color:white;padding:1px 7px;
+                           border-radius:8px;font-size:0.8em;">Deployed in this project</span></li>
+    <li><strong>yolov11n_pose</strong> — Multi-pose detection, outputting 17 keypoints (latest YOLO iteration)</li>
+    <li><strong>handlandmarks</strong> — Single-pose detection, mapping 21 distinct hand keypoints</li>
+    <li><strong>headlandmarks</strong> — Single-pose detection, extracting a dense 468/478 facial keypoint mesh</li>
   </ul>
 </div>
 
@@ -345,14 +337,13 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
   MoveNet Lightning — Official performance on STM32N6570-DK
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The following data comes directly from the Model Zoo README —
-  these are the official ST benchmarks for the model we deployed.
-  Our measured results (22 ms at 192×192) are consistent with these figures.
+  The empirical data presented below is sourced from the official STMicroelectronics Model Zoo documentation, representing the baseline hardware benchmarks for the deployed architecture.
+  Independent validation conducted during this project (recording a 22.05 ms inference latency at a 192×192 resolution) strongly correlates with these manufacturer specifications.
 </p>
 
 <!-- Memory footprint -->
 <div style="font-weight:600;color:#1a1a2e;font-size:0.9em;
-            margin-bottom:8px;">Memory footprint on STM32N6</div>
+            margin-bottom:8px;">Memory Footprint Analysis (STM32N6 Target)</div>
 <div style="overflow-x:auto;margin-bottom:20px;">
 <table style="width:100%;border-collapse:collapse;font-size:0.85em;">
   <thead>
@@ -395,7 +386,7 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
 
 <!-- Inference time -->
 <div style="font-weight:600;color:#1a1a2e;font-size:0.9em;
-            margin-bottom:8px;">Inference time on STM32N6570-DK (NPU/MCU)</div>
+            margin-bottom:8px;">Inference Latency and Throughput (STM32N6570-DK NPU)</div>
 <div style="overflow-x:auto;margin-bottom:20px;">
 <table style="width:100%;border-collapse:collapse;font-size:0.85em;">
   <thead>
@@ -439,7 +430,7 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
 
 <!-- Accuracy table (compact) -->
 <div style="font-weight:600;color:#1a1a2e;font-size:0.9em;
-            margin-bottom:8px;">Accuracy — OKS on COCO Person dataset</div>
+            margin-bottom:8px;">Accuracy Metrics (Object Keypoint Similarity on COCO Person Dataset)</div>
 <div style="overflow-x:auto;margin-bottom:28px;">
 <table style="width:100%;border-collapse:collapse;font-size:0.85em;">
   <thead>
@@ -485,107 +476,100 @@ $(document).ready(function(){initNavTree('toolchain_modelzoo.html',''); initResi
 </div>
 
 
-<!-- HOW TO USE -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- HOW TO USE -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  How to clone and use it
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
-  The repo uses <strong>Git LFS</strong> for large binary files (model weights).
-  You must install and initialise Git LFS before cloning, otherwise model files
-  will download as empty pointers.
-</p>
+    Repository Initialization and Setup
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
+    The repository utilizes <strong>Git Large File Storage (Git LFS)</strong> for managing substantial binary assets, specifically pre-trained model weights. Git LFS must be installed and initialized prior to cloning; failure to execute this prerequisite will result in the retrieval of unresolved pointer files rather than the actual model binaries.
+  </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:20px 24px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:20px 24px;
             font-family:monospace;font-size:0.88em;line-height:2;
             color:#e2e8f0;margin-bottom:16px;">
-  <span style="color:#68d391;"># 1. Install Git LFS (Ubuntu)</span><br/>
-  sudo apt-get install git-lfs<br/><br/>
-  <span style="color:#68d391;"># 2. Initialise Git LFS for your account</span><br/>
-  git lfs install<br/>
-  <span style="color:#a0aec0;"># Expected output: Git LFS initialized.</span><br/><br/>
-  <span style="color:#68d391;"># 3. Clone — place it in the SAME folder as modelzoo-services</span><br/>
-  git clone https://github.com/STMicroelectronics/stm32ai-modelzoo.git<br/><br/>
-  <span style="color:#68d391;"># 4. Navigate to the model you want</span><br/>
-  cd stm32ai-modelzoo/pose_estimation/movenet/ST_pretrainedmodel_public_dataset/
-</div>
+    <span style="color:#68d391;"># 1. Install Git LFS (Ubuntu/Debian environment)</span><br/>
+    sudo apt-get install git-lfs<br/><br/>
+    <span style="color:#68d391;"># 2. Initialize Git LFS within the local environment</span><br/>
+    git lfs install<br/>
+    <span style="color:#a0aec0;"># Expected stdout: Git LFS initialized.</span><br/><br/>
+    <span style="color:#68d391;"># 3. Clone the repository into the designated workspace</span><br/>
+    git clone https://github.com/STMicroelectronics/stm32ai-modelzoo.git<br/><br/>
+    <span style="color:#68d391;"># 4. Navigate to the target model directory</span><br/>
+    cd stm32ai-modelzoo/pose_estimation/movenet/ST_pretrainedmodel_public_dataset/
+  </div>
 
-<div style="background:#fff8e1;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
+  <div style="background:#fff8e1;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
             border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;">
-  <strong style="color:#b7791f;">Important — folder placement:</strong>
-  <span style="color:#744210;font-size:0.9em;">
-  Clone the Model Zoo in the <strong>same parent folder</strong> as
-  <code>stm32ai-modelzoo-services</code>. The config file examples in Services
-  reference model paths relative to this structure. If the folders are not
-  siblings, you will need to update every <code>model_path</code> in
-  <code>user_config.yaml</code> manually.
+    <strong style="color:#b7791f;">Critical Workspace Hierarchy:</strong>
+    <span style="color:#744210;font-size:0.9em;">
+  The Model Zoo repository must be cloned as a <strong>sibling directory</strong> to the
+  <code>stm32ai-modelzoo-services</code> repository. The default configuration templates provided by the Services framework rely on relative paths mapped to this specific structure. Deviating from this hierarchy requires manual, comprehensive reconfiguration of all <code>model_path</code> variables within the localized <code>user_config.yaml</code> file.
   </span>
-</div>
+  </div>
 
 
-<!-- WHAT WE USED -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- WHAT WE USED -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  What we used in this project
-</h2>
+    Project Implementation Matrix
+  </h2>
 
-<div style="overflow-x:auto;margin-bottom:28px;">
-<table style="width:100%;border-collapse:collapse;font-size:0.88em;">
-  <thead>
-    <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:10px 14px;text-align:left;">Model</th>
-      <th style="padding:10px 14px;text-align:left;">Source</th>
-      <th style="padding:10px 14px;text-align:left;">Format</th>
-      <th style="padding:10px 14px;text-align:left;">Zoo?</th>
-      <th style="padding:10px 14px;text-align:left;">Quantization needed?</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="background:#f0fff4;border-bottom:1px solid #e2e8f0;">
-      <td style="padding:10px 14px;font-weight:700;color:#276749;">MoveNet Lightning</td>
-      <td style="padding:10px 14px;">ST Model Zoo</td>
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.tflite INT8</td>
-      <td style="padding:10px 14px;">
+  <div style="overflow-x:auto;margin-bottom:28px;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
+      <thead>
+      <tr style="background:#1a1a2e;color:white;">
+        <th style="padding:10px 14px;text-align:left;">Architecture</th>
+        <th style="padding:10px 14px;text-align:left;">Provenance</th>
+        <th style="padding:10px 14px;text-align:left;">Export Format</th>
+        <th style="padding:10px 14px;text-align:left;">ST Repository Origin</th>
+        <th style="padding:10px 14px;text-align:left;">Quantization Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr style="background:#f0fff4;border-bottom:1px solid #e2e8f0;">
+        <td style="padding:10px 14px;font-weight:700;color:#276749;">MoveNet Lightning</td>
+        <td style="padding:10px 14px;">ST Model Zoo</td>
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.tflite (INT8)</td>
+        <td style="padding:10px 14px;">
         <span style="background:#38a169;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">Yes</span></td>
-      <td style="padding:10px 14px;">
+                     border-radius:10px;font-size:0.82em;">Native</span></td>
+        <td style="padding:10px 14px;">
         <span style="background:#38a169;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">No — pre-quantized</span></td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;">
-      <td style="padding:10px 14px;font-weight:700;color:#92400e;">YOLOv8n-pose</td>
-      <td style="padding:10px 14px;">Ultralytics (external)</td>
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.pt &#8594; .tflite</td>
-      <td style="padding:10px 14px;">
+                     border-radius:10px;font-size:0.82em;">Pre-quantized</span></td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:10px 14px;font-weight:700;color:#92400e;">YOLOv8n-pose</td>
+        <td style="padding:10px 14px;">Ultralytics (External)</td>
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.pt &#8594; .tflite</td>
+        <td style="padding:10px 14px;">
         <span style="background:#718096;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">No</span></td>
-      <td style="padding:10px 14px;">
+                     border-radius:10px;font-size:0.82em;">External</span></td>
+        <td style="padding:10px 14px;">
         <span style="background:#d69e2e;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">Yes — PTQ via TFLite</span></td>
-    </tr>
-    <tr>
-      <td style="padding:10px 14px;font-weight:700;color:#c53030;">TinyBERT</td>
-      <td style="padding:10px 14px;">HuggingFace (external)</td>
-      <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.onnx</td>
-      <td style="padding:10px 14px;">
+                     border-radius:10px;font-size:0.82em;">Required (PTQ via TFLite)</span></td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;font-weight:700;color:#c53030;">TinyBERT</td>
+        <td style="padding:10px 14px;">HuggingFace (External)</td>
+        <td style="padding:10px 14px;font-family:monospace;font-size:0.9em;">.onnx</td>
+        <td style="padding:10px 14px;">
         <span style="background:#718096;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">No</span></td>
-      <td style="padding:10px 14px;">
+                     border-radius:10px;font-size:0.82em;">External</span></td>
+        <td style="padding:10px 14px;">
         <span style="background:#e94560;color:white;padding:2px 8px;
-                     border-radius:10px;font-size:0.82em;">Yes — PTQ required</span></td>
-    </tr>
-  </tbody>
-</table>
-</div>
+                     border-radius:10px;font-size:0.82em;">Required (PTQ via ONNX)</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
-<div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
+  <div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
             padding:16px 20px;margin-bottom:32px;font-size:0.9em;
             color:#2c5282;line-height:1.7;">
-  <strong>Next step:</strong> once you have your model file, you pass it to
-  <strong>ModelZoo Services</strong> via <code>user_config.yaml</code>.
-  The Services framework handles everything else — quantization if needed,
-  profiling, and deployment. That is what we look at in the next section.
-</div>
+    <strong>Pipeline Continuation:</strong> Following the acquisition or synthesis of the target model file, the asset is passed to the
+    <strong>ModelZoo Services</strong> framework via the localized <code>user_config.yaml</code> file. The Services architecture subsequently orchestrates the remainder of the deployment pipeline, encompassing automated post-training quantization (if required), NPU profiling, and validation. This orchestration is analyzed in detail in the following section.
+  </div>
 
 <!-- Navigation -->
 <div style="display:flex;justify-content:space-between;margin-top:32px;">
