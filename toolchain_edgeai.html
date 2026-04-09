@@ -101,10 +101,9 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
     The Python-to-C Bridge
   </h1>
   <p style="color:#a0aec0;font-size:0.95em;line-height:1.7;margin:0 0 20px 0;max-width:620px;">
-    ST Edge AI Core is the converter tool that takes a quantized neural network
-    model (<code>.tflite</code>, <code>.onnx</code>) and produces optimised C source
-    files, assigns each layer to either the NPU or the CPU, and generates a
-    detailed profiling report. This is where Python ends and C begins.
+    ST Edge AI Core serves as the critical compiler bridging the machine learning environment and the embedded target.
+    It ingests quantized neural network topologies (<code>.tflite</code>, <code>.onnx</code>) to generate hardware-optimized C source arrays.
+    During this translation, the compiler schedules operational execution across the Neural-ART NPU and the host CPU, outputting a comprehensive epoch-level profiling report.
   </p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
     <div style="background:rgba(233,69,96,0.2);border:1px solid #e94560;
@@ -126,13 +125,12 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 <!-- WHAT IS IT -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  What is ST Edge AI Core?
+  Compiler Architecture and Functional Scope
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  A neural network model file — even a quantized INT8 <code>.tflite</code> —
-  cannot run directly on a microcontroller. It is a portable format that needs
-  to be compiled into something a microcontroller can actually execute.
-  <strong>ST Edge AI Core</strong> is the tool that performs this translation.
+  A serialized neural network topology—even a heavily optimized, quantized INT8 <code>.tflite</code> file—cannot be executed natively on bare-metal microcontroller architectures.
+  These portable formats require ahead-of-time (AOT) compilation to translate generic graph definitions into hardware-specific execution schedules.
+  <strong>ST Edge AI Core</strong> functions as this dedicated AOT compiler.
 </p>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
   It does four things in one pass:
@@ -143,35 +141,30 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
               border-radius:0 8px 8px 0;padding:14px 18px;">
     <div style="font-weight:700;color:#c53030;margin-bottom:6px;">1. Graph optimization</div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
-      Fuses adjacent operations (Conv + BatchNorm + ReLU into a single kernel),
-      removes redundant transposes, and reformats tensor layouts for the target hardware.
+      Executes graph-level optimizations by fusing adjacent algorithmic layers (e.g., condensing Conv2D + BatchNorm + ReLU into a single monolithic kernel),
+      eliminating redundant tensor transposes and formatting memory layouts specifically for the target NPU.
     </p>
   </div>
   <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:3px solid #ed8936;
               border-radius:0 8px 8px 0;padding:14px 18px;">
     <div style="font-weight:700;color:#92400e;margin-bottom:6px;">2. NPU epoch assignment</div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
-      Analyses every layer and assigns it to either an <strong>EC epoch</strong>
-      (executed on the Neural-ART NPU hardware) or a <strong>SW epoch</strong>
-      (executed on the Cortex-M55 CPU) based on NPU hardware support.
+      Analyzes the computational graph to partition operations.
+      Supported layers are mapped to an <strong>EC (Execution Context) epoch</strong> for hardware acceleration on the Neural-ART NPU, while unsupported operators are routed to a <strong>SW (Software) epoch</strong> for fallback execution on the Cortex-M55 CPU.
     </p>
   </div>
   <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:3px solid #4299e1;
               border-radius:0 8px 8px 0;padding:14px 18px;">
     <div style="font-weight:700;color:#2b6cb0;margin-bottom:6px;">3. Memory allocation</div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
-      Places weights in OctoFlash and assigns activation buffers to the correct
-      SRAM banks (npuRAM4, npuRAM5) based on the <code>.mpool</code> memory
-      configuration file for the STM32N6570-DK.
+      Maps static model weights to external memory (OctoFlash) and orchestrates activation buffer placement across internal SRAM domains (e.g., npuRAM4, npuRAM5) in strict adherence to the STM32N6570-DK <code>.mpool</code> memory topology configuration.
     </p>
   </div>
   <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:3px solid #38a169;
               border-radius:0 8px 8px 0;padding:14px 18px;">
     <div style="font-weight:700;color:#276749;margin-bottom:6px;">4. C code generation</div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
-      Produces <code>network.c</code> (layer execution schedule),
-      <code>network_data_params.c</code> (weight arrays in flash),
-      and all supporting headers — ready to compile with STM32CubeIDE.
+      Synthesizes the final execution environment, producing the runtime scheduling logic (<code>network.c</code>), the serialized weight arrays (<code>network_data_params.c</code>) and associated configuration headers. These artifacts are immediately ready for cross-compilation within STM32CubeIDE.
     </p>
   </div>
 </div>
@@ -180,12 +173,12 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 <!-- THE COMMAND -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  How it is invoked — the actual command
+  Compiler Invocation and Parameter Analysis
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
-  You never call ST Edge AI Core manually — <code>common_deploy.py</code> calls it
-  automatically during deployment. But understanding the command it runs helps
-  make sense of the output. Here is the exact command used for MoveNet:
+  While the <code>stedgeai</code> command-line interface is typically abstracted and invoked automatically by the <code>common_deploy.py</code> orchestration script,
+  analyzing the underlying command provides critical insight into the compilation constraints.
+  The exact instruction set generated and executed for the MoveNet deployment is detailed below:
 </p>
 
 <div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
@@ -207,37 +200,34 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 <table style="width:100%;border-collapse:collapse;font-size:0.86em;">
   <thead>
     <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:8px 14px;text-align:left;">Argument</th>
-      <th style="padding:8px 14px;text-align:left;">Meaning</th>
+      <th style="padding:8px 14px;text-align:left;">Compilation Flag</th>
+      <th style="padding:8px 14px;text-align:left;">Architectural Function</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">--target stm32n6</td>
-      <td style="padding:8px 14px;">Target the STM32N6 NPU backend (Neural-ART)</td>
+      <td style="padding:8px 14px;">Specifies the STM32N6 Neural-ART NPU as the primary hardware compilation backend.</td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">--st-neural-art</td>
-      <td style="padding:8px 14px;">Loads the NPU configuration JSON for the STM32N6570-DK board</td>
+      <td style="padding:8px 14px;">Ingests the target-specific hardware JSON profile for the STM32N6570-DK board.</td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">--load-mpool</td>
-      <td style="padding:8px 14px;">Memory pool config: tells the compiler which SRAM banks to use
-        and at which addresses</td>
+      <td style="padding:8px 14px;">Defines the hardware-specific memory topology, strictly mapping buffers to defined SRAM banks and absolute addresses.</td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">--input-data-type uint8</td>
-      <td style="padding:8px 14px;">Camera frames arrive as uint8 — no CPU dequantization needed at input</td>
+      <td style="padding:8px 14px;">Forces input mapping to <code>uint8</code>, matching raw camera frame buffers and eliminating the need for runtime CPU dequantization.</td>
     </tr>
     <tr style="border-bottom:1px solid #e2e8f0;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">--enable-epoch-controller</td>
-      <td style="padding:8px 14px;">Generates the epoch schedule that the NPU runtime uses to
-        interleave EC and SW epochs</td>
+      <td style="padding:8px 14px;">Activates the generation of the runtime epoch controller, responsible for orchestrating the interleaved execution of NPU (EC) and CPU (SW) epochs.</td>
     </tr>
     <tr style="background:#fafafa;">
       <td style="padding:8px 14px;font-family:monospace;color:#e94560;">-O3 --Oalt-sched --Ocache-opt</td>
-      <td style="padding:8px 14px;">Full optimisation: alternative scheduling, cache-aware layout,
-        minimum code size</td>
+      <td style="padding:8px 14px;">Enables maximum graph optimization (Level 3), alternative execution scheduling, cache-optimized memory layouts, and binary size reduction (<code>-Os</code>).</td>
     </tr>
   </tbody>
 </table>
@@ -247,13 +237,12 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 <!-- EPOCH BREAKDOWN — REAL DATA -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Epoch breakdown — MoveNet Lightning (real data)
+  Empirical Epoch Analysis: MoveNet Lightning
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The following is extracted directly from the
-  <code>network_generate_report.txt</code> produced by ST Edge AI Core v2.1.0
-  when we deployed MoveNet Lightning (192×192, INT8, 13 keypoints).
-  <strong>75 total epochs: 71 EC (NPU) and 4 SW (CPU)</strong>.
+  The empirical data presented below is derived from the compiler-generated
+  <code>network_generate_report.txt</code>, produced by ST Edge AI Core v2.1.0 during the deployment of the MoveNet Lightning architecture (192×192 resolution, INT8 quantization, 13 keypoints).
+  The compilation yielded a total of 75 operational epochs, partitioned into 71 Hardware Execution Context (EC) epochs and 4 Software (SW) fallback epochs.
 </p>
 
 <!-- Epoch summary bar -->
@@ -280,19 +269,21 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 </svg>
 </div>
 
+
+
 <!-- SW epochs detail -->
 <div style="background:#fff5f5;border:1px solid #e94560;border-radius:10px;
             padding:18px 22px;margin-bottom:24px;">
   <div style="font-weight:700;color:#c53030;margin-bottom:12px;">
-    The 4 SW epochs — why they fall back to CPU
+    Analysis of Software (SW) Fallback Epochs
   </div>
   <div style="overflow-x:auto;">
   <table style="width:100%;border-collapse:collapse;font-size:0.87em;">
     <thead>
       <tr style="background:#c53030;color:white;">
-        <th style="padding:8px 12px;">Epoch</th>
-        <th style="padding:8px 12px;">Operation</th>
-        <th style="padding:8px 12px;">Why on CPU?</th>
+        <th style="padding:8px 12px;">Epoch Identifier</th>
+        <th style="padding:8px 12px;">Graph Operation</th>
+        <th style="padding:8px 12px;">Architectural Fallback Justification</th>
       </tr>
     </thead>
     <tbody>
@@ -300,36 +291,35 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
         <td style="padding:8px 12px;font-family:monospace;font-weight:700;">epoch 59</td>
         <td style="padding:8px 12px;font-family:monospace;">Resize (bilinear)</td>
         <td style="padding:8px 12px;color:#742a2a;">
-          Bilinear interpolation requires floating-point position arithmetic.
-          The Neural-ART NPU has no bilinear resize unit.
+          Bilinear interpolation generally necessitates complex coordinate mapping arithmetic.
+          On this specific target, these operations lack dedicated Neural-ART NPU hardware acceleration and are routed to the Cortex-M55 CPU.
         </td>
       </tr>
       <tr style="border-bottom:1px solid #fed7d7;">
         <td style="padding:8px 12px;font-family:monospace;font-weight:700;">epoch 63</td>
         <td style="padding:8px 12px;font-family:monospace;">Resize (bilinear)</td>
-        <td style="padding:8px 12px;color:#742a2a;">Same — second decoder upsample stage.</td>
+        <td style="padding:8px 12px;color:#742a2a;">Corresponds to the second upsampling stage within the feature pyramid decoder.</td>
       </tr>
       <tr style="border-bottom:1px solid #fed7d7;background:#fff5f5;">
         <td style="padding:8px 12px;font-family:monospace;font-weight:700;">epoch 67</td>
         <td style="padding:8px 12px;font-family:monospace;">Resize (bilinear)</td>
-        <td style="padding:8px 12px;color:#742a2a;">Same — third decoder upsample stage.</td>
+        <td style="padding:8px 12px;color:#742a2a;">Corresponds to the third upsampling stage within the feature pyramid decoder.</td>
       </tr>
       <tr>
         <td style="padding:8px 12px;font-family:monospace;font-weight:700;">epoch 74</td>
         <td style="padding:8px 12px;font-family:monospace;">DequantizeLinear</td>
         <td style="padding:8px 12px;color:#742a2a;">
-          Converts INT8 output heatmaps to float32 for the C postprocessor.
-          A one-time scale+offset operation at the very end of the network.
+          Executes the final cast from INT8 to FP32.
+          This single-pass scale and offset operation prepares the output heatmaps for the spatial post-processing algorithms natively handled in C.
         </td>
       </tr>
     </tbody>
   </table>
   </div>
   <p style="color:#742a2a;font-size:0.86em;line-height:1.7;margin:12px 0 0 0;">
-    <strong>Key insight:</strong> these 4 SW epochs are <em>not</em> in the backbone —
-    they are all in the decoder (upsampling) and output stage.
-    The entire MobileNetV2 backbone (epochs 1–58) runs 100% on the NPU.
-    This is why MoveNet achieves 94.7% offload despite having CPU fallback operations.
+    <strong>Architectural Insight:</strong> The identified SW fallback epochs are strictly localized to the network's decoder (upsampling) and final output stages.
+    The entirety of the MobileNetV2 feature extractor backbone (Epochs 1–58) executes natively on the NPU hardware.
+    Consequently, the model achieves a 94.6% epoch-level hardware offload, ensuring optimal inference latency despite minor Cortex-M55 CPU interventions..
   </p>
 </div>
 
@@ -337,421 +327,387 @@ $(document).ready(function(){initNavTree('toolchain_edgeai.html',''); initResiza
 <!-- MEMORY REPORT — REAL DATA -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Memory allocation report — real data
+  Empirical Memory Allocation Topography
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  ST Edge AI Core places every buffer at a specific physical address.
-  The following is the exact memory layout generated for MoveNet:
+  The ST Edge AI Core compiler employs strict static memory allocation, binding all tensor buffers and model parameters to absolute physical addresses during the AOT translation.
+  The following matrix details the explicit hardware memory topography synthesized for the MoveNet architecture:
 </p>
 
-<div style="overflow-x:auto;margin-bottom:20px;">
-<table style="width:100%;border-collapse:collapse;font-size:0.86em;">
-  <thead>
-    <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:9px 14px;text-align:left;">Region</th>
-      <th style="padding:9px 14px;text-align:center;">Address range</th>
-      <th style="padding:9px 14px;text-align:center;">Used</th>
-      <th style="padding:9px 14px;text-align:center;">Available</th>
-      <th style="padding:9px 14px;text-align:left;">Content</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#ebf8ff;">
-      <td style="padding:9px 14px;font-weight:700;color:#2b6cb0;">cpuRAM2</td>
-      <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
-        0x34100000–0x34200000</td>
-      <td style="padding:9px 14px;text-align:center;font-weight:700;">864 KB</td>
-      <td style="padding:9px 14px;text-align:center;">1 MB</td>
-      <td style="padding:9px 14px;">CPU activations (SW epoch intermediate buffers)</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#f0fff4;">
-      <td style="padding:9px 14px;font-weight:700;color:#276749;">npuRAM4</td>
-      <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
-        0x34270000–0x342E0000</td>
-      <td style="padding:9px 14px;text-align:center;font-weight:700;color:#276749;">378 KB</td>
-      <td style="padding:9px 14px;text-align:center;">448 KB</td>
-      <td style="padding:9px 14px;"><strong>nn_in</strong>: camera frame 192×192×3 input to NPU</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#f0fff4;">
-      <td style="padding:9px 14px;font-weight:700;color:#276749;">npuRAM5</td>
-      <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
-        0x342E0000–0x34350000</td>
-      <td style="padding:9px 14px;text-align:center;font-weight:700;color:#276749;">432 KB</td>
-      <td style="padding:9px 14px;text-align:center;">448 KB</td>
-      <td style="padding:9px 14px;"><strong>nn_out</strong>: heatmaps 48×48×13 output from NPU</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#fef3c7;">
-      <td style="padding:9px 14px;font-weight:700;color:#92400e;">octoFlash</td>
-      <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
-        0x70380000–0x7066C810</td>
-      <td style="padding:9px 14px;text-align:center;font-weight:700;color:#92400e;">2.924 MB</td>
-      <td style="padding:9px 14px;text-align:center;">61 MB</td>
-      <td style="padding:9px 14px;"><strong>Weights</strong>: 2,355,908 bytes of INT8 parameters</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;">
-      <td style="padding:9px 14px;font-weight:600;color:#718096;">npuRAM3, npuRAM6</td>
-      <td style="padding:9px 14px;text-align:center;color:#718096;">—</td>
-      <td style="padding:9px 14px;text-align:center;color:#718096;">0 B</td>
-      <td style="padding:9px 14px;text-align:center;">448 KB each</td>
-      <td style="padding:9px 14px;color:#718096;">Not used by MoveNet — available for other models</td>
-    </tr>
-    <tr>
-      <td style="padding:9px 14px;font-weight:600;color:#718096;">hyperRAM</td>
-      <td style="padding:9px 14px;text-align:center;color:#718096;">0x90000000</td>
-      <td style="padding:9px 14px;text-align:center;color:#718096;">0 B</td>
-      <td style="padding:9px 14px;text-align:center;">16 MB</td>
-      <td style="padding:9px 14px;color:#718096;">Not used by NPU — used by LCD framebuffers</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+  <div style="overflow-x:auto;margin-bottom:20px;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.86em;">
+      <thead>
+      <tr style="background:#1a1a2e;color:white;">
+        <th style="padding:9px 14px;text-align:left;">Hardware Domain</th>
+        <th style="padding:9px 14px;text-align:center;">Physical Address Range</th>
+        <th style="padding:9px 14px;text-align:center;">Allocated Capacity</th>
+        <th style="padding:9px 14px;text-align:center;">Total Bank Size</th>
+        <th style="padding:9px 14px;text-align:left;">Architectural Function</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#ebf8ff;">
+        <td style="padding:9px 14px;font-weight:700;color:#2b6cb0;">cpuRAM2</td>
+        <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
+          0x34100000–0x34200000</td>
+        <td style="padding:9px 14px;text-align:center;font-weight:700;">864 KB</td>
+        <td style="padding:9px 14px;text-align:center;">1 MB</td>
+        <td style="padding:9px 14px;">CPU activations (Intermediate buffers for SW fallback epochs)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#f0fff4;">
+        <td style="padding:9px 14px;font-weight:700;color:#276749;">npuRAM4</td>
+        <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
+          0x34270000–0x342E0000</td>
+        <td style="padding:9px 14px;text-align:center;font-weight:700;color:#276749;">378 KB</td>
+        <td style="padding:9px 14px;text-align:center;">448 KB</td>
+        <td style="padding:9px 14px;"><strong>nn_in</strong>: Input tensor buffer (192×192×3 camera frame ingestion)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#f0fff4;">
+        <td style="padding:9px 14px;font-weight:700;color:#276749;">npuRAM5</td>
+        <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
+          0x342E0000–0x34350000</td>
+        <td style="padding:9px 14px;text-align:center;font-weight:700;color:#276749;">432 KB</td>
+        <td style="padding:9px 14px;text-align:center;">448 KB</td>
+        <td style="padding:9px 14px;"><strong>nn_out</strong>: Output tensor buffer (48×48×13 generated heatmaps)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#fef3c7;">
+        <td style="padding:9px 14px;font-weight:700;color:#92400e;">octoFlash</td>
+        <td style="padding:9px 14px;font-family:monospace;font-size:0.85em;text-align:center;">
+          0x70380000–0x7066C810</td>
+        <td style="padding:9px 14px;text-align:center;font-weight:700;color:#92400e;">2.924 MB</td>
+        <td style="padding:9px 14px;text-align:center;">61 MB</td>
+        <td style="padding:9px 14px;"><strong>Weights</strong>: Serialized INT8 model parameters (2,355,908 bytes)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:9px 14px;font-weight:600;color:#718096;">npuRAM3, npuRAM6</td>
+        <td style="padding:9px 14px;text-align:center;color:#718096;">—</td>
+        <td style="padding:9px 14px;text-align:center;color:#718096;">0 B</td>
+        <td style="padding:9px 14px;text-align:center;">448 KB each</td>
+        <td style="padding:9px 14px;color:#718096;">Unallocated by MoveNet; retained for supplementary firmware operations</td>
+      </tr>
+      <tr>
+        <td style="padding:9px 14px;font-weight:600;color:#718096;">hyperRAM</td>
+        <td style="padding:9px 14px;text-align:center;color:#718096;">0x90000000</td>
+        <td style="padding:9px 14px;text-align:center;color:#718096;">0 B</td>
+        <td style="padding:9px 14px;text-align:center;">16 MB</td>
+        <td style="padding:9px 14px;color:#718096;">External Hexa-SPI RAM; reserved for LCD display framebuffers</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
-<!-- Total summary -->
-<div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
+  <!-- Total summary -->
+  <div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
             padding:14px 20px;margin-bottom:28px;font-size:0.88em;">
-  <strong style="color:#2b6cb0;">Total footprint — MoveNet Lightning 192×192 INT8:</strong>
-  <span style="color:#2c5282;">
-    weights <strong>2.924 MB</strong> (OctoFlash) +
-    activations <strong>1.635 MB</strong> (SRAM) =
-    <strong>4.559 MB total</strong>.
-    Flash code: 13,342 bytes RT + 330,597 bytes rodata.
+    <strong style="color:#2b6cb0;">Aggregated Footprint Analysis (MoveNet Lightning 192×192 INT8):</strong>
+    <span style="color:#2c5282;">
+    Static Weights <strong>2.924 MB</strong> (OctoFlash) +
+    Dynamic Activations <strong>1.635 MB</strong> (Internal SRAM) =
+    <strong>4.559 MB Total Memory Demand</strong>.
+    Runtime Engine Footprint: 13,342 bytes (<code>.text</code>) + 330,597 bytes (<code>.rodata</code>).
   </span>
-</div>
+  </div>
 
 
-<!-- LAYER TABLE — REAL DATA -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- LAYER TABLE — REAL DATA -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Layer-by-layer report — first 10 layers (real data)
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
-  The full report contains 87 layer entries. Here are the first 10 to show
-  the format and what it reveals. The model starts with a QUANTIZE conversion
-  layer, then proceeds through the MobileNetV2 backbone with alternating
-  CONV_2D and DEPTHWISE_CONV_2D blocks.
-</p>
+    Layer-Wise Profiling Report (Excerpt)
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
+    The complete profiling diagnostic logs 87 discrete operations. The excerpt below illustrates the structural formatting and execution metrics of the network's initial and terminal stages. The topology initializes with a pre-processing <code>QUANTIZE</code> conversion, subsequently feeding into the MobileNetV2 feature extractor—characterized by its signature sequence of depthwise-separable convolutions.
+  </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
             font-family:monospace;font-size:0.78em;line-height:1.8;
             color:#e2e8f0;margin-bottom:12px;overflow-x:auto;">
-  <span style="color:#a0aec0;"># From network_generate_report.txt — ST Edge AI Core v2.1.0</span><br/>
-  <span style="color:#a0aec0;"># model: st_movenet_lightning_heatmaps_192_int8_pc.tflite</span><br/><br/>
-  <span style="color:#68d391;">m_id  layer                     oshape              param/size    macc</span><br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  0 &nbsp;&nbsp;&nbsp;&nbsp;serving_default_input   [1,192,192,3]<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fbd38d;">conversion_0 (QUANTIZE)</span>  [1,192,192,3]                   221,184<br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  1 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_1 (CONV_2D)</span>        [1,96,96,32]   896/992     7,962,656<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">nl_1_nl (CONV_2D)</span>         [1,96,96,32]                   294,912<br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  2 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_2 (DEPTHWISE)</span>      [1,96,96,32]   320/416     2,654,240<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">nl_2_nl (DEPTHWISE)</span>       [1,96,96,32]                   294,912<br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  3 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_3 (CONV_2D)</span>        [1,96,96,16]   528/576     4,718,608<br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  ...  <span style="color:#a0aec0;">(83 more layers — all EC except epochs 59, 63, 67, 74)</span><br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  85 &nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_85 (CONV_2D)</span>       [1,48,48,13]   1,261/1,300  2,875,405<br/>
-  86 &nbsp;&nbsp;<span style="color:#fbd38d;">nl_86 (LOGISTIC/Sigmoid)</span>  [1,48,48,13]                  299,520<br/>
-  87 &nbsp;&nbsp;<span style="color:#e94560;">conversion_87 (DEQUANTIZE)</span>[1,48,48,13]                   59,904  <span style="color:#fc8181;">← SW epoch 74</span><br/>
-  ──────────────────────────────────────────────────────────────────<br/>
-  <span style="color:#68d391;">Total: macc=242,937,509  weights=2,355,908  activations=1,635,000</span>
-</div>
+    <span style="color:#a0aec0;"># Source: network_generate_report.txt — ST Edge AI Core v2.1.0</span><br/>
+    <span style="color:#a0aec0;"># Target: st_movenet_lightning_heatmaps_192_int8_pc.tflite</span><br/><br/>
+    <span style="color:#68d391;">m_id  layer                     oshape              param/size    macc</span><br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    0 &nbsp;&nbsp;&nbsp;&nbsp;serving_default_input   [1,192,192,3]<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fbd38d;">conversion_0 (QUANTIZE)</span>  [1,192,192,3]                   221,184<br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    1 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_1 (CONV_2D)</span>        [1,96,96,32]   896/992     7,962,656<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">nl_1_nl (CONV_2D)</span>         [1,96,96,32]                   294,912<br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    2 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_2 (DEPTHWISE)</span>      [1,96,96,32]   320/416     2,654,240<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">nl_2_nl (DEPTHWISE)</span>       [1,96,96,32]                   294,912<br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    3 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_3 (CONV_2D)</span>        [1,96,96,16]   528/576     4,718,608<br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    ...  <span style="color:#a0aec0;">(83 operations omitted — all EC mapping except epochs 59, 63, 67, 74)</span><br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    85 &nbsp;&nbsp;<span style="color:#90cdf4;">conv2d_85 (CONV_2D)</span>       [1,48,48,13]   1,261/1,300  2,875,405<br/>
+    86 &nbsp;&nbsp;<span style="color:#fbd38d;">nl_86 (LOGISTIC/Sigmoid)</span>  [1,48,48,13]                  299,520<br/>
+    87 &nbsp;&nbsp;<span style="color:#e94560;">conversion_87 (DEQUANTIZE)</span>[1,48,48,13]                   59,904  <span style="color:#fc8181;">← SW epoch 74</span><br/>
+    ──────────────────────────────────────────────────────────────────<br/>
+    <span style="color:#68d391;">Total Cumulative: macc=242,937,509  weights=2,355,908  activations=1,635,000</span>
+  </div>
 
-<div style="background:#f0fff4;border:1px solid #38a169;border-radius:8px;
+  <div style="background:#f0fff4;border:1px solid #38a169;border-radius:8px;
             padding:14px 18px;margin-bottom:28px;font-size:0.88em;
             color:#276749;line-height:1.7;">
-  <strong>Reading the table:</strong>
-  <code>m_id</code> is the layer index;
-  <code>oshape</code> is the output tensor shape <code>[batch, height, width, channels]</code>;
-  <code>param/size</code> is weights count / bytes (INT8);
-  <code>macc</code> is the number of multiply-accumulate operations —
-  the dominant cost of convolution.
-  The total of <strong>242.9 million MACs</strong> completes in 22 ms on the NPU
-  (≈11 GOPS effective throughput, well below the 600 GOPS peak due to memory bandwidth limits).
-</div>
+    <strong>Columnar Definitions & Performance Analysis:</strong>
+    <ul>
+      <li style="margin-bottom:4px;"><code>m_id</code>: The sequential execution index of the operator layer.</li>
+      <li style="margin-bottom:4px;"><code>oshape</code>: The output tensor dimensionality structured as <code>[batch, height, width, channels]</code>.</li>
+      <li style="margin-bottom:4px;"><code>param/size</code>: The absolute parameter count versus the serialized memory footprint (in bytes) for INT8 weights.</li>
+      <li style="margin-bottom:4px;"><code>macc</code>: The Multiply-Accumulate operational count, representing the primary computational bottleneck of the convolutional network.</li>
+    </ul>
+    The aggregate workload of <strong>242.9 million MACs</strong> completes in 22.05 ms on the Neural-ART NPU. This translates to an effective throughput of approximately <strong>22 GOPS (11 GMAC/s)</strong>. While this demonstrates highly deterministic and efficient real-time execution, the differential between effective throughput and the NPU's 600 GOPS theoretical peak underscores the latency bounds introduced by physical memory bandwidth constraints.
+  </div>
 
 
-<!-- GENERATED C FILES -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- GENERATED C FILES -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  What ST Edge AI Core produces — generated files
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  After a successful run, the output directory contains two categories of files:
-  the <strong>C source files</strong> that will be compiled into the firmware,
-  and the <strong>analysis reports</strong> that document what was generated.
-</p>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-top:3px solid #e94560;
-              border-radius:8px;padding:18px;">
-    <div style="font-weight:700;color:#c53030;margin-bottom:10px;">
-      C source files (compiled into firmware)
-    </div>
-    <div style="font-family:monospace;font-size:0.82em;line-height:1.9;color:#4a5568;">
-      generated/<br/>
-      ├── <span style="color:#c53030;font-weight:600;">network.c</span>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← epoch schedule</span><br/>
-      ├── network_data.c &nbsp;&nbsp;&nbsp;<span style="color:#718096;">← weight arrays</span><br/>
-      ├── network_data_params.c<br/>
-      ├── Inc/network.h<br/>
-      ├── Inc/network_data.h<br/>
-      ├── Inc/layers.h<br/>
-      ├── Inc/ai_lite.h<br/>
-      ├── Inc/ai_lite_interface.h<br/>
-      └── Inc/core_datatypes.h<br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">(+ 16 more header files)</span>
-    </div>
-  </div>
-
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-top:3px solid #4299e1;
-              border-radius:8px;padding:18px;">
-    <div style="font-weight:700;color:#2b6cb0;margin-bottom:10px;">
-      Analysis reports (for documentation)
-    </div>
-    <div style="font-family:monospace;font-size:0.82em;line-height:1.9;color:#4a5568;">
-      output_dir/<br/>
-      ├── <span style="color:#2b6cb0;font-weight:600;">network_generate_report.txt</span><br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← layers + epochs + memory</span><br/>
-      ├── <span style="color:#2b6cb0;font-weight:600;">network_c_info.json</span><br/>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← per-node cycle estimates</span><br/>
-      ├── stm32ai_main.log<br/>
-      ├── *_OE_3_2_0.onnx &nbsp;&nbsp;<span style="color:#718096;">← optimised graph</span><br/>
-      └── *_Q.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← quantization params</span>
-    </div>
-  </div>
-
-</div>
-
-
-<!-- INSIDE network.c -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
-            border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Inside network.c — what the generated code actually looks like
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  <code>network.c</code> is 5,882 lines of auto-generated C. You will never edit it —
-  but understanding its three-part structure explains exactly how the NPU executes
-  your model at runtime. This is the level of detail that distinguishes a deployment
-  you truly understand from one you just ran a script for.
-</p>
-
-<!-- Part 1: Memory pool map -->
-<div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #4299e1;
-            border-radius:0 10px 10px 0;padding:18px 22px;margin-bottom:14px;">
-  <div style="font-weight:700;color:#2b6cb0;margin-bottom:10px;">
-    Part 1 — Memory pool declarations (the comment header)
-  </div>
-  <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
-    The first ~30 lines are comments documenting every memory pool the compiler
-    considered and its decision. Each pool has a <code>score</code> — the compiler's
-    fitness metric — and the pool with the highest score for each tensor wins:
+    Compilation Artifacts: Generated Source and Diagnostics
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    Upon successful execution, the ST Edge AI Core populates the output directory with two distinct categories of artifacts: the <strong>C source code</strong> required for cross-compiling the target firmware, and the <strong>diagnostic reports</strong> that transparently document the hardware mapping and memory allocation strategies.
   </p>
-  <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+    <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-top:3px solid #e94560;
+              border-radius:8px;padding:18px;">
+      <div style="font-weight:700;color:#c53030;margin-bottom:10px;">
+        Executable Source Artifacts (Target Firmware)
+      </div>
+      <div style="font-family:monospace;font-size:0.82em;line-height:1.9;color:#4a5568;">
+        generated/<br/>
+        ├── <span style="color:#c53030;font-weight:600;">network.c</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← Runtime epoch scheduling logic</span><br/>
+        ├── network_data.c &nbsp;&nbsp;&nbsp;<span style="color:#718096;">← Serialized weight arrays</span><br/>
+        ├── network_data_params.c<br/>
+        ├── Inc/network.h<br/>
+        ├── Inc/network_data.h<br/>
+        ├── Inc/layers.h<br/>
+        ├── Inc/ai_lite.h<br/>
+        ├── Inc/ai_lite_interface.h<br/>
+        └── Inc/core_datatypes.h<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">(+ 16 supplementary header files)</span>
+      </div>
+    </div>
+
+    <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-top:3px solid #4299e1;
+              border-radius:8px;padding:18px;">
+      <div style="font-weight:700;color:#2b6cb0;margin-bottom:10px;">
+        Diagnostic and Profiling Artifacts
+      </div>
+      <div style="font-family:monospace;font-size:0.82em;line-height:1.9;color:#4a5568;">
+        output_dir/<br/>
+        ├── <span style="color:#2b6cb0;font-weight:600;">network_generate_report.txt</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← Topological mapping & memory telemetry</span><br/>
+        ├── <span style="color:#2b6cb0;font-weight:600;">network_c_info.json</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← Per-node cycle execution estimates</span><br/>
+        ├── stm32ai_main.log<br/>
+        ├── *_OE_3_2_0.onnx &nbsp;&nbsp;<span style="color:#718096;">← Fused & optimized computational graph</span><br/>
+        └── *_Q.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#718096;">← Scale/Zero-point quantization parameters</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INSIDE network.c -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+            border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
+    Internal Architecture of network.c
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    The <code>network.c</code> artifact consists of auto-generated C source code orchestrating the model's execution. Here we analayze its tripartite structure is fundamental to understanding the low-level hardware orchestration performed by the NPU at runtime. This analysis transitions the deployment process from an opaque script execution to a transparent architectural implementation.
+  </p>
+
+  <!-- Part 1: Memory pool map -->
+  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #4299e1;
+            border-radius:0 10px 10px 0;padding:18px 22px;margin-bottom:14px;">
+    <div style="font-weight:700;color:#2b6cb0;margin-bottom:10px;">
+      Part 1 — Memory Pool Allocation Heuristics
+    </div>
+    <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
+      The initial block encapsulates the compiler's memory allocation telemetry. Each target memory pool is evaluated against a heuristic <code>score</code>—derived from bandwidth, latency and cacheability metrics. The compiler maps each tensor to the highest-scoring valid memory domain:
+    </p>
+    <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
               font-family:monospace;font-size:0.78em;line-height:1.9;color:#e2e8f0;">
-    <span style="color:#a0aec0;">/* global pool 8 is 2.92 MB */</span><br/>
-    <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">octoFlash</span>
+      <span style="color:#a0aec0;">/* global pool 8 is 2.92 MB */</span><br/>
+      <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">octoFlash</span>
     offset=<span style="color:#68d391;">0x70380000</span>
     READ_ONLY LATENCY=HIGH cacheable=ON <span style="color:#fc8181;">score=50</span> */</span><br/><br/>
-    <span style="color:#a0aec0;">/* global pool 1 is 432.00 KB */</span><br/>
-    <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">npuRAM5</span>
+      <span style="color:#a0aec0;">/* global pool 1 is 432.00 KB */</span><br/>
+      <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">npuRAM5</span>
     offset=<span style="color:#68d391;">0x342e0000</span>
     THROUGHPUT=HIGH LATENCY=LOW cacheable=OFF <span style="color:#68d391;">score=94</span> */</span><br/><br/>
-    <span style="color:#a0aec0;">/* global pool 2 is 378.00 KB */</span><br/>
-    <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">npuRAM4</span>
+      <span style="color:#a0aec0;">/* global pool 2 is 378.00 KB */</span><br/>
+      <span style="color:#a0aec0;">/* name=<span style="color:#fbd38d;">npuRAM4</span>
     offset=<span style="color:#68d391;">0x34270000</span>
     THROUGHPUT=HIGH LATENCY=LOW cacheable=OFF <span style="color:#68d391;">score=94</span> */</span>
+    </div>
+    <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
+      The internal <code>npuRAM4</code> and <code>npuRAM5</code> banks achieve a maximum score of 94, reflecting their zero-wait-state, direct NPU connectivity. Conversely, the external <code>octoFlash</code> scores 50 due to inherent latency constraints, yet remains the sole valid target for the 2.9 MB static weight payload.
+    </p>
   </div>
-  <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
-    npuRAM4/5 score 94 — fast SRAM directly connected to the NPU, zero cache overhead.
-    OctoFlash scores 50 — high latency, but the only option for 2.9 MB of weights.
-    The compiler places activations in npuRAM and weights in flash accordingly.
-  </p>
-</div>
 
-<!-- Part 2: EC blobs -->
-<div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #e94560;
+  <!-- Part 2: EC blobs -->
+  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #e94560;
             border-radius:0 10px 10px 0;padding:18px 22px;margin-bottom:14px;">
-  <div style="font-weight:700;color:#c53030;margin-bottom:10px;">
-    Part 2 — EC epoch blobs (network_ecblobs.h)
-  </div>
-  <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
-    This is the most unusual part. The NPU does not execute layers through
-    C function calls. Instead, each EC epoch is encoded as a
-    <strong>binary blob</strong> — a sequence of 64-bit words that the NPU epoch
-    controller interprets as microcode, loading them directly into hardware registers:
-  </p>
-  <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
+    <div style="font-weight:700;color:#c53030;margin-bottom:10px;">
+      Part 2 — Hardware Execution Context (EC) Blobs
+    </div>
+    <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
+      A defining architectural feature of the Neural-ART NPU is its execution paradigm. The NPU does not process standard C function calls; instead, each EC epoch is encoded as a predefined <strong>binary blob</strong>. These 64-bit instruction words function as microcode, ingested directly by the hardware Epoch Controller:
+    </p>
+    <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
               font-family:monospace;font-size:0.78em;line-height:1.8;color:#e2e8f0;">
-    <span style="color:#a0aec0;">/* Epoch 1 — first Conv2D block, MobileNetV2 stem */</span><br/>
-    static const uint64_t _ec_blob_1 [] =<br/>
-    {<br/>
-    &nbsp;&nbsp;0x0000b686ca057a7aUL,&nbsp;<span style="color:#68d391;">/* CONVACC unit config */</span><br/>
-    &nbsp;&nbsp;0x5c00004200802241UL,&nbsp;<span style="color:#68d391;">/* weight address + stride */</span><br/>
-    &nbsp;&nbsp;0x0001b000342e0000UL,&nbsp;<span style="color:#68d391;">/* activation buffer (npuRAM5) */</span><br/>
-    &nbsp;&nbsp;... <span style="color:#a0aec0;">/* 71 blobs total, one per EC epoch */</span><br/>
-    };
+      <span style="color:#a0aec0;">/* Epoch 1 — first Conv2D block, MobileNetV2 stem */</span><br/>
+      static const uint64_t _ec_blob_1 [] =<br/>
+      {<br/>
+      &nbsp;&nbsp;0x0000b686ca057a7aUL,&nbsp;<span style="color:#68d391;">/* CONVACC unit config */</span><br/>
+      &nbsp;&nbsp;0x5c00004200802241UL,&nbsp;<span style="color:#68d391;">/* weight address + stride */</span><br/>
+      &nbsp;&nbsp;0x0001b000342e0000UL,&nbsp;<span style="color:#68d391;">/* activation buffer (npuRAM5) */</span><br/>
+      &nbsp;&nbsp;... <span style="color:#a0aec0;">/* 71 blobs total, one per EC epoch */</span><br/>
+      };
+    </div>
+    <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
+      Each blob encapsulates the absolute hardware state required for a single NPU epoch, including MAC unit configuration, OctoFlash weight pointer addresses, SRAM activation buffer limits and convolutional stride/padding parameters. By loading these directly into the NPU registers without CPU intervention, the architecture minimizes control-flow overhead and maximizes inference throughput.
+    </p>
   </div>
-  <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
-    Each blob encodes the complete configuration for one NPU epoch: CONVACC unit
-    selection, weight buffer address in OctoFlash, activation buffer in npuRAM,
-    kernel size, stride, padding. The epoch controller loads these directly
-    into NPU registers with zero CPU involvement — this is why EC epochs are
-    orders of magnitude faster than SW epochs.
-  </p>
-</div>
 
-<!-- Part 3: SW fallbacks -->
-<div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #38a169;
+  <!-- Part 3: SW fallbacks -->
+  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #38a169;
             border-radius:0 10px 10px 0;padding:18px 22px;margin-bottom:24px;">
-  <div style="font-weight:700;color:#276749;margin-bottom:10px;">
-    Part 3 — SW epoch C function calls
-  </div>
-  <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
-    For the 4 SW epochs, the compiler generates standard C calls into the
-    <code>ll_sw</code> library, executed by the Cortex-M55 with Helium SIMD
-    (enabled by the <code>--mvei</code> flag in the compiler command):
-  </p>
-  <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
+    <div style="font-weight:700;color:#276749;margin-bottom:10px;">
+      Part 3 — Software (SW) Fallback Routines
+    </div>
+    <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
+      For operations mapped to SW epochs, the compiler synthesizes standard C function invocations targeting the <code>ll_sw</code> (Low-Level Software) library. These are executed by the Cortex-M55 host CPU, accelerating vector math via the Helium SIMD extension (mandated by the <code>--mvei</code> compiler flag):
+    </p>
+    <div style="background:#1a1a2e;border-radius:8px;padding:14px 18px;
               font-family:monospace;font-size:0.78em;line-height:1.8;color:#e2e8f0;">
-    <span style="color:#a0aec0;">/* Epochs 59, 63, 67 — Resize bilinear (decoder upsample) */</span><br/>
-    <span style="color:#90cdf4;">ll_sw_resize_bilinear</span>(input_ptr, output_ptr,<br/>
-    &nbsp;&nbsp;in_h, in_w, out_h, out_w, channels);<br/><br/>
-    <span style="color:#a0aec0;">/* Epoch 74 — DequantizeLinear (INT8 → float32 for postprocessor) */</span><br/>
-    <span style="color:#90cdf4;">ll_sw_dequantize</span>(int8_ptr, float32_ptr, scale, zero_point, size);
+      <span style="color:#a0aec0;">/* Epochs 59, 63, 67 — Resize bilinear (decoder upsample) */</span><br/>
+      <span style="color:#90cdf4;">ll_sw_resize_bilinear</span>(input_ptr, output_ptr,<br/>
+      &nbsp;&nbsp;in_h, in_w, out_h, out_w, channels);<br/><br/>
+      <span style="color:#a0aec0;">/* Epoch 74 — DequantizeLinear (INT8 → float32 for postprocessor) */</span><br/>
+      <span style="color:#90cdf4;">ll_sw_dequantize</span>(int8_ptr, float32_ptr, scale, zero_point, size);
+    </div>
+    <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
+      Following the execution of the final SW epoch (epoch 74), the terminal output is an FP32 heatmap tensor localized in <code>npuRAM5</code>. This tensor is immediately accessible to the bare-metal C post-processing routines (e.g., <a href="display__spe_8c.html"><code>display_spe.c</code></a>) for coordinate decoding and spatial rendering.
+    </p>
   </div>
-  <p style="color:#4a5568;font-size:0.85em;line-height:1.7;margin:10px 0 0 0;">
-    After epoch 74, the output is a float32 heatmap tensor in npuRAM5 —
-    ready for the C firmware postprocessor in
-    <a href="display__spe_8c.html"><code>display_spe.c</code></a> to decode
-    the argmax coordinates and draw the skeleton on the LCD.
-  </p>
-</div>
 
-<!-- Connection box -->
-<div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
+  <!-- Connection box -->
+  <div style="background:#f0f7ff;border:1px solid #4299e1;border-radius:8px;
             padding:14px 20px;margin-bottom:28px;font-size:0.88em;
             color:#2c5282;line-height:1.7;">
-  <strong>Connection to Part 2 — your handwritten C firmware:</strong>
-  <code>network.c</code> is auto-generated and not in the stm32_docs source tree.
-  The handwritten firmware calls <code>LL_ATON_RT_Main()</code> in
-  <a href="main_8c.html">main.c</a>, which triggers the epoch controller to
-  execute all 75 blobs in sequence.
-  The only generated file your firmware includes directly is
-  <a href="app__config_8h.html">app_config.h</a> — documented below and in Part 2.
-</div>
+    <strong>Firmware Integration Context:</strong>
+    The <code>network.c</code> artifact is volatile and excluded from manual version control. The custom C firmware interfaces with this auto-generated logic exclusively by invoking <code>LL_ATON_RT_Main()</code> within <a href="main_8c.html"><code>main.c</code></a>. This low-level API call initializes the Neural-ART Epoch Controller, triggering the sequential execution of all 75 defined epochs. The only generated header directly included within the firmware is <a href="app__config_8h.html"><code>app_config.h</code></a>.
+  </div>
 
-
-<!-- app_config.h -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- app_config.h -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  The C_header — app_config.h (real file)
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
-  Separately from the network C files, <code>gen_h_file.py</code> generates
-  <code>app_config.h</code> — the configuration header that tells the C firmware
-  everything it needs to know about the model. Here is the actual file generated
-  for our MoveNet deployment:
-</p>
+    Configuration Interface: app_config.h
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
+    In parallel with the executable C sources, the compilation pipeline synthesizes <code>app_config.h</code> via the <code>gen_h_file.py</code> utility. This header serves as the configuration bridge, providing the bare-metal firmware with the requisite topological and post-processing hyperparameters mapped from the original model. The exact configuration generated for the deployed MoveNet architecture is detailed below:
+  </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
             font-family:monospace;font-size:0.82em;line-height:1.9;
             color:#e2e8f0;margin-bottom:12px;">
-  <span style="color:#a0aec0;">/* Generated by gen_h_file.py — do not edit manually */</span><br/><br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">POSTPROCESS_TYPE</span>
-  &nbsp;POSTPROCESS_SPE_MOVENET_UF<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_HEIGHT</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(192)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_WIDTH</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(192)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_BPP</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">COLOR_MODE</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COLOR_RGB<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">ASPECT_RATIO_MODE</span>  ASPECT_RATIO_CROP<br/><br/>
-  <span style="color:#a0aec0;">/* Post-processing */</span><br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_POSE_PP_CONF_THRESHOLD</span>  (0.4)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_POSE_PP_POSE_KEYPOINTS_NB</span>  (13)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_HEATMAP_WIDTH</span>  (NN_WIDTH/4)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_HEATMAP_HEIGHT</span> (NN_HEIGHT/4)<br/>
-  <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_NB_KEYPOINTS</span>  (13)
-</div>
+    <span style="color:#a0aec0;">/* Generated by gen_h_file.py — do not edit manually */</span><br/><br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">POSTPROCESS_TYPE</span>
+    &nbsp;POSTPROCESS_SPE_MOVENET_UF<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_HEIGHT</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(192)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_WIDTH</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(192)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">NN_BPP</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">COLOR_MODE</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COLOR_RGB<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">ASPECT_RATIO_MODE</span>  ASPECT_RATIO_CROP<br/><br/>
+    <span style="color:#a0aec0;">/* Post-processing Hyperparameters */</span><br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_POSE_PP_CONF_THRESHOLD</span>  (0.4)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_POSE_PP_POSE_KEYPOINTS_NB</span>  (13)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_HEATMAP_WIDTH</span>  (NN_WIDTH/4)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_HEATMAP_HEIGHT</span> (NN_HEIGHT/4)<br/>
+    <span style="color:#68d391;">#define</span> <span style="color:#fbd38d;">AI_SPE_MOVENET_POSTPROC_NB_KEYPOINTS</span>  (13)
+  </div>
 
-<div style="overflow-x:auto;margin-bottom:32px;">
-<table style="width:100%;border-collapse:collapse;font-size:0.87em;">
-  <thead>
-    <tr style="background:#1a1a2e;color:white;">
-      <th style="padding:8px 14px;text-align:left;">Define</th>
-      <th style="padding:8px 14px;text-align:left;">Value</th>
-      <th style="padding:8px 14px;text-align:left;">Used by</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="border-bottom:1px solid #e2e8f0;">
-      <td style="padding:8px 14px;font-family:monospace;color:#c53030;">POSTPROCESS_TYPE</td>
-      <td style="padding:8px 14px;font-family:monospace;">POSTPROCESS_SPE_MOVENET_UF</td>
-      <td style="padding:8px 14px;">Selects the argmax heatmap decoder in <code>display_spe.c</code></td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
-      <td style="padding:8px 14px;font-family:monospace;color:#c53030;">NN_HEIGHT / NN_WIDTH</td>
-      <td style="padding:8px 14px;font-family:monospace;">192, 192</td>
-      <td style="padding:8px 14px;">DCMIPP crop window and NPU input buffer sizing</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;">
-      <td style="padding:8px 14px;font-family:monospace;color:#c53030;">AI_POSE_PP_CONF_THRESHOLD</td>
-      <td style="padding:8px 14px;font-family:monospace;">0.4</td>
-      <td style="padding:8px 14px;">Keypoints below 40% confidence are not drawn</td>
-    </tr>
-    <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
-      <td style="padding:8px 14px;font-family:monospace;color:#c53030;">AI_POSE_PP_POSE_KEYPOINTS_NB</td>
-      <td style="padding:8px 14px;font-family:monospace;">13</td>
-      <td style="padding:8px 14px;">Selects the 13-keypoint skeleton (no head landmarks)</td>
-    </tr>
-    <tr>
-      <td style="padding:8px 14px;font-family:monospace;color:#c53030;">HEATMAP_WIDTH/HEIGHT</td>
-      <td style="padding:8px 14px;font-family:monospace;">48, 48 (=192/4)</td>
-      <td style="padding:8px 14px;">Output heatmap resolution — argmax decoded per channel</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+  <div style="overflow-x:auto;margin-bottom:32px;">
+    <table style="width:100%;border-collapse:collapse;font-size:0.87em;">
+      <thead>
+      <tr style="background:#1a1a2e;color:white;">
+        <th style="padding:8px 14px;text-align:left;">Macro Definition</th>
+        <th style="padding:8px 14px;text-align:left;">Assigned Value</th>
+        <th style="padding:8px 14px;text-align:left;">Firmware Integration Purpose</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:8px 14px;font-family:monospace;color:#c53030;">POSTPROCESS_TYPE</td>
+        <td style="padding:8px 14px;font-family:monospace;">POSTPROCESS_SPE_MOVENET_UF</td>
+        <td style="padding:8px 14px;">Statically selects the corresponding <code>argmax</code> heatmap decoding routine within <code>display_spe.c</code>.</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
+        <td style="padding:8px 14px;font-family:monospace;color:#c53030;">NN_HEIGHT / NN_WIDTH</td>
+        <td style="padding:8px 14px;font-family:monospace;">192, 192</td>
+        <td style="padding:8px 14px;">Defines DCMIPP hardware cropping windows and dimensions for the NPU input tensor buffer.</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;">
+        <td style="padding:8px 14px;font-family:monospace;color:#c53030;">AI_POSE_PP_CONF_THRESHOLD</td>
+        <td style="padding:8px 14px;font-family:monospace;">0.4</td>
+        <td style="padding:8px 14px;">Establishes a 40% absolute confidence threshold; coordinates below this value are aggressively filtered during rendering.</td>
+      </tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#fafafa;">
+        <td style="padding:8px 14px;font-family:monospace;color:#c53030;">AI_POSE_PP_POSE_KEYPOINTS_NB</td>
+        <td style="padding:8px 14px;font-family:monospace;">13</td>
+        <td style="padding:8px 14px;">Configures the firmware to map the 13-keypoint body skeleton geometry.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 14px;font-family:monospace;color:#c53030;">HEATMAP_WIDTH/HEIGHT</td>
+        <td style="padding:8px 14px;font-family:monospace;">48, 48 (=192/4)</td>
+        <td style="padding:8px 14px;">Specifies the spatial resolution of the output heatmaps, matching the inherent stride-4 reduction of the model.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
 
-<!-- HOW IT FITS IN THE PIPELINE -->
-<div style="background:#1a1a2e;color:#e2e8f0;padding:22px 28px;
+  <!-- HOW IT FITS IN THE PIPELINE -->
+  <div style="background:#1a1a2e;color:#e2e8f0;padding:22px 28px;
             border-radius:10px;margin-bottom:32px;border-left:5px solid #e94560;">
-  <div style="color:#fc8181;font-weight:700;font-size:0.85em;
+    <div style="color:#fc8181;font-weight:700;font-size:0.85em;
               letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
-    Where ST Edge AI Core fits in the full pipeline
+      End-to-End Pipeline Orchestration Summary
+    </div>
+    <div style="font-family:monospace;font-size:0.88em;line-height:2;">
+      <span style="color:#68d391;">Source Repository</span>: st_movenet_lightning_heatmaps_192_int8_pc.tflite<br/>
+      &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">common_deploy.py invokes stedgeai generate</span><br/>
+      <span style="color:#e94560;">ST Edge AI Core Compiler</span>: Graph Optimization → Hardware Epoch Scheduling → Static Memory Allocation → Native C Synthesis<br/>
+      &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">Artifacts emitted to experiments_outputs/</span><br/>
+      <span style="color:#90cdf4;">network.c</span> + <span style="color:#90cdf4;">network_data.c</span>
+      + <span style="color:#fbd38d;">app_config.h</span>
+      + <span style="color:#a0aec0;">network_generate_report.txt</span><br/>
+      &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">STM32CubeIDE initiates cross-compilation and ST-Link flash</span><br/>
+      <span style="color:#68d391;">STM32N6570-DK Target</span>: Executes native bare-metal inference (22.05 ms latency, 94.7% NPU hardware offload)
+    </div>
   </div>
-  <div style="font-family:monospace;font-size:0.88em;line-height:2;">
-    <span style="color:#68d391;">Zoo</span>: st_movenet_lightning_heatmaps_192_int8_pc.tflite<br/>
-    &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">common_deploy.py calls stedgeai generate</span><br/>
-    <span style="color:#e94560;">ST Edge AI Core</span>: graph opt → epoch assignment → memory alloc → C gen<br/>
-    &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">outputs to experiments_outputs/</span><br/>
-    <span style="color:#90cdf4;">network.c</span> + <span style="color:#90cdf4;">network_data.c</span>
-    + <span style="color:#fbd38d;">app_config.h</span>
-    + <span style="color:#a0aec0;">network_generate_report.txt</span><br/>
-    &nbsp;&nbsp;&darr; <span style="color:#a0aec0;">STM32CubeIDE compiles and flashes</span><br/>
-    <span style="color:#68d391;">STM32N6570-DK</span>: 22 ms inference, 94.7% NPU offload
-  </div>
-</div>
 
-<!-- Navigation -->
-<div style="display:flex;justify-content:space-between;margin-top:32px;">
-  <a href="toolchain_services.html"
-     style="background:#e2e8f0;color:#4a5568;padding:10px 22px;border-radius:8px;
+  <!-- Navigation -->
+  <div style="display:flex;justify-content:space-between;margin-top:32px;">
+    <a href="toolchain_services.html"
+       style="background:#e2e8f0;color:#4a5568;padding:10px 22px;border-radius:8px;
             text-decoration:none;font-weight:700;font-size:0.9em;">
-    &larr; 3.2 ModelZoo Services
-  </a>
-  <a href="toolchain_cubeide.html"
-     style="background:#4a90e2;color:white;padding:10px 22px;border-radius:8px;
+      &larr; 3.2 ModelZoo Services
+    </a>
+    <a href="toolchain_cubeide.html"
+       style="background:#4a90e2;color:white;padding:10px 22px;border-radius:8px;
             text-decoration:none;font-weight:700;font-size:0.9em;">
-    Next: 3.4 STM32CubeIDE &rarr;
-  </a>
-</div>
+      Next: 3.4 STM32CubeIDE &rarr;
+    </a>
+  </div>
 
  </p>
 </div></div><!-- contents -->
