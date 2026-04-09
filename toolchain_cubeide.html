@@ -98,13 +98,12 @@ $(document).ready(function(){initNavTree('toolchain_cubeide.html',''); initResiz
     3.4 &mdash; STM32CubeIDE &amp; C Firmware
   </div>
   <h1 style="color:#fff;font-size:1.7em;font-weight:800;margin:0 0 12px 0;line-height:1.2;">
-    Compile, Sign &amp; Flash
+    Cross-Compilation, Secure Signing and Deployment
   </h1>
   <p style="color:#a0aec0;font-size:0.95em;line-height:1.7;margin:0 0 20px 0;max-width:620px;">
-    The final step of the pipeline. STM32CubeIDE compiles the C firmware project,
-    STM32SigningTool signs the binary for secure boot, and STM32CubeProgrammer
-    flashes it to the board via ST-Link. All three tools are invoked automatically
-    by <code>common_deploy.py</code>.
+    The final stage of the deployment pipeline utilizes STM32CubeIDE to cross-compile the C firmware project.
+    Subsequently, the STM32SigningTool authenticates the binary to satisfy secure boot constraints and the STM32CubeProgrammer transfers the artifacts to the target board via the ST-Link protocol.
+    This entire sequence is orchestrated autonomously by the <code>common_deploy.py</code> script.
   </p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
     <div style="background:rgba(246,224,94,0.2);border:1px solid #d69e2e;
@@ -126,452 +125,422 @@ $(document).ready(function(){initNavTree('toolchain_cubeide.html',''); initResiz
 <!-- WHAT IS CUBEIDE -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  What is STM32CubeIDE?
+  Headless Toolchain Integration
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  <strong>STM32CubeIDE</strong> is the official Eclipse-based IDE from STMicroelectronics
-  for STM32 development. In our pipeline it plays a specific role: it is used purely
-  as a <strong>command-line build tool</strong>, not as an interactive IDE.
-  <code>common_deploy.py</code> invokes its headless build mode, compiles the
-  C project, and immediately proceeds to flashing — without any manual interaction.
+  <strong>STM32CubeIDE</strong> is the official Eclipse-based integrated development environment maintained by STMicroelectronics.
+  Within this specific deployment architecture, it is decoupled from its graphical interface and utilized exclusively as a <strong>headless cross-compilation toolchain</strong>.
+  The Python orchestration script invokes the compiler in the background to build the final executable, proceeding directly to the flashing sequence without requiring manual developer intervention.
 </p>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:24px;">
-  What makes this step interesting is that it is not just a compilation.
-  The STM32N6 uses a <strong>secure boot architecture</strong>: the binary must be
-  signed with STM32SigningTool before it can be flashed, and the weights
-  are flashed separately at a different memory address than the firmware.
-  Understanding this sequence explains the boot switch procedure and why
-  two separate flash commands are needed.
+  A critical architectural constraint of the STM32N6570-DK is its strict <strong>secure boot protocol</strong>.
+  A generated binary cannot execute natively upon transfer; it must first be cryptographically authenticated using the STM32SigningTool.
+  Furthermore, the deployment workflow partitions the executable artifacts: the primary firmware and the static model weights are flashed to distinct physical addresses within the external OctoFlash memory.
+  Understanding this partitioned memory map clarifies the necessity for dual flash commands and the physical boot switch toggling required during hardware initialization.
 </p>
 
 
 <!-- THE CONF FILE -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  The .conf file — how common_deploy.py finds and drives CubeIDE
+  Build Orchestration Configuration: stmaic_STM32N6570-DK.conf
 </h2>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:14px;">
-  <code>common_deploy.py</code> does not hardcode any project paths.
-  Instead, it reads <code>stmaic_STM32N6570-DK.conf</code> — a JSON configuration
-  file that describes the entire build and flash procedure for this specific board.
-  Here is the actual file from our project:
+  The <code>common_deploy.py</code> orchestration script avoids hardcoded directory paths.
+  Instead, it dynamically resolves the workspace topology by parsing <code>stmaic_STM32N6570-DK.conf</code>—a JSON-formatted configuration file that dictates the exact build and flash procedure for the target hardware.
+  The specific configuration executed for this deployment is detailed below:
 </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
             font-family:monospace;font-size:0.8em;line-height:1.9;
             color:#e2e8f0;margin-bottom:20px;overflow-x:auto;">
-  <span style="color:#a0aec0;">{</span><br/>
-  &nbsp;&nbsp;<span style="color:#90cdf4;">"description"</span>:
-  <span style="color:#fbd38d;">"STM32N6570-DK Getting Started Pose Estimation"</span>,<br/>
-  &nbsp;&nbsp;<span style="color:#90cdf4;">"builder"</span>:
-  <span style="color:#fbd38d;">"stm32_cube_ide"</span>,<br/>
-  &nbsp;&nbsp;<span style="color:#90cdf4;">"env"</span>: {<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"cproject_name"</span>:
-  <span style="color:#fbd38d;">"STM32N6570-DK_GettingStarted_PoseEstimation"</span>,<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"project_folder"</span>:
-  <span style="color:#fbd38d;">"${app_src_root}/Application/STM32N6570-DK/STM32CubeIDE"</span>,<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"network_src_root"</span>:
-  <span style="color:#fbd38d;">"${ProjectFolder}/Model/STM32N6570-DK"</span>,<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"stm32_ai_lib_folder"</span>:
-  <span style="color:#fbd38d;">"${ProjectFolder}/Middlewares/AI_Runtime"</span><br/>
-  &nbsp;&nbsp;},<br/>
-  &nbsp;&nbsp;<span style="color:#90cdf4;">"templates"</span>: [<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">/* Files copied into the CubeIDE project before build: */</span><br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network.c"</span>,
-  "copy" ],<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network_ecblobs.h"</span>,
-  "copy" ],<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network_atonbuf.xSPI2.raw"</span>,
-  "copy" ],<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${stm32_ai_lib_folder}/Lib/GCC/ARMCortexM55"</span>,
-  "copy-dir" ],<br/>
-  &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#fbd38d;">"${app_src_root}/.../Inc/app_config.h"</span>,
-  "copy" ]<br/>
-  &nbsp;&nbsp;]<br/>
-  <span style="color:#a0aec0;">}</span>
-</div>
+    <span style="color:#a0aec0;">{</span><br/>
+    &nbsp;&nbsp;<span style="color:#90cdf4;">"description"</span>:
+    <span style="color:#fbd38d;">"STM32N6570-DK Getting Started Pose Estimation"</span>,<br/>
+    &nbsp;&nbsp;<span style="color:#90cdf4;">"builder"</span>:
+    <span style="color:#fbd38d;">"stm32_cube_ide"</span>,<br/>
+    &nbsp;&nbsp;<span style="color:#90cdf4;">"env"</span>: {<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"cproject_name"</span>:
+    <span style="color:#fbd38d;">"STM32N6570-DK_GettingStarted_PoseEstimation"</span>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"project_folder"</span>:
+    <span style="color:#fbd38d;">"${app_src_root}/Application/STM32N6570-DK/STM32CubeIDE"</span>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"network_src_root"</span>:
+    <span style="color:#fbd38d;">"${ProjectFolder}/Model/STM32N6570-DK"</span>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#90cdf4;">"stm32_ai_lib_folder"</span>:
+    <span style="color:#fbd38d;">"${ProjectFolder}/Middlewares/AI_Runtime"</span><br/>
+    &nbsp;&nbsp;},<br/>
+    &nbsp;&nbsp;<span style="color:#90cdf4;">"templates"</span>: [<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">/* Artifact injection prior to cross-compilation: */</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network.c"</span>,
+    "copy" ],<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network_ecblobs.h"</span>,
+    "copy" ],<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${network_src_root}/network_atonbuf.xSPI2.raw"</span>,
+    "copy" ],<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#68d391;">"${stm32_ai_lib_folder}/Lib/GCC/ARMCortexM55"</span>,
+    "copy-dir" ],<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;[ "", <span style="color:#fbd38d;">"${app_src_root}/.../Inc/app_config.h"</span>,
+    "copy" ]<br/>
+    &nbsp;&nbsp;]<br/>
+    <span style="color:#a0aec0;">}</span>
+  </div>
 
-<div style="background:#fffbea;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
+  <div style="background:#fffbea;border:1px solid #d69e2e;border-left:4px solid #d69e2e;
             border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;">
-  <strong style="color:#b7791f;">Key insight — the templates section:</strong>
-  <span style="color:#744210;font-size:0.9em;">
-  Before calling CubeIDE, <code>common_deploy.py</code> uses the
-  <code>templates</code> list to <strong>copy the generated files</strong>
-  into the CubeIDE project. This is how <code>network.c</code>,
-  <code>network_ecblobs.h</code>, and <code>app_config.h</code>
-  generated by ST Edge AI Core reach the C compiler.
-  The project in the repo is a <em>template</em> — it compiles correctly
-  only after these files have been injected.
+    <strong style="color:#b7791f;">Architectural Insight: The Injection Strategy</strong><br/>
+    <span style="color:#744210;font-size:0.9em;">
+  Prior to invoking the headless STM32CubeIDE compiler, the orchestration script parses the
+  <code>templates</code> array to inject the auto-generated artifacts into the C firmware tree. This mechanism dictates how the ST Edge AI Core outputs (such as <code>network.c</code>, <code>network_ecblobs.h</code> and the <code>.raw</code> OctoFlash payload) physically interface with the compiler. Consequently, the core C project serves purely as a skeleton template; successful compilation is strictly contingent upon this dynamic injection sequence.
   </span>
-</div>
+  </div>
 
 
-<!-- PROJECT STRUCTURE -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- PROJECT STRUCTURE -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  C project structure
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The CubeIDE project is named
-  <strong>STM32N6570-DK_GettingStarted_PoseEstimation</strong> and lives in
-  <code>Application/STM32N6570-DK/STM32CubeIDE/</code>.
-  Here is its complete structure:
-</p>
+    Firmware Project Topology
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    The STM32CubeIDE workspace is designated as <strong>STM32N6570-DK_GettingStarted_PoseEstimation</strong> and resides within the <code>Application/STM32N6570-DK/STM32CubeIDE/</code> directory. The architectural hierarchy detailed below illustrates the integration of custom application logic, hardware abstraction layers and the dynamically injected ST Edge AI Core artifacts:
+  </p>
 
-<div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
+  <div style="background:#1a1a2e;border-radius:10px;padding:18px 22px;
             font-family:monospace;font-size:0.82em;line-height:1.9;
             color:#e2e8f0;margin-bottom:24px;">
-  <span style="color:#fbd38d;">STM32N6570-DK_GettingStarted_PoseEstimation/</span><br/>
-  ├── Application/<br/>
-  │&nbsp;&nbsp; ├── Inc/<br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="app__config_8h.html" style="color:#fc8181;">app_config.h</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; injected by common_deploy.py</span><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="app__camerapipeline_8h.html" style="color:#fc8181;">app_camerapipeline.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__spe_8h.html" style="color:#fc8181;">display_spe.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__mpe_8h.html" style="color:#fc8181;">display_mpe.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__keypoints__13_8h.html" style="color:#fc8181;">display_keypoints_13.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__keypoints__17_8h.html" style="color:#fc8181;">display_keypoints_17.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="crop__img_8h.html" style="color:#fc8181;">crop_img.h</a><br/>
-  │&nbsp;&nbsp; │&nbsp;&nbsp; └── <a href="main_8h.html" style="color:#fc8181;">main.h</a><br/>
-  │&nbsp;&nbsp; └── Src/<br/>
-  │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="main_8c.html" style="color:#fc8181;">main.c</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; inference loop + DCMIPP init</span><br/>
-  │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="app__camerapipeline_8c.html" style="color:#fc8181;">app_camerapipeline.c</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; MIPI + DCMIPP dual-pipe</span><br/>
-  │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="display__spe_8c.html" style="color:#fc8181;">display_spe.c</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; heatmap decoder + skeleton draw</span><br/>
-  │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="display__mpe_8c.html" style="color:#fc8181;">display_mpe.c</a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; YOLOv8 multi-pose display</span><br/>
-  │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <a href="crop__img_8c.html" style="color:#fc8181;">crop_img.c</a><br/>
-  ├── Model/STM32N6570-DK/<br/>
-  │&nbsp;&nbsp; ├── <span style="color:#e94560;font-weight:600;">network.c</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; injected — epoch schedule</span><br/>
-  │&nbsp;&nbsp; ├── <span style="color:#e94560;font-weight:600;">network_ecblobs.h</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; injected — NPU blobs</span><br/>
-  │&nbsp;&nbsp; └── <span style="color:#e94560;font-weight:600;">network_atonbuf.xSPI2.raw</span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; injected — raw weight binary</span><br/>
-  ├── Middlewares/AI_Runtime/<br/>
-  │&nbsp;&nbsp; ├── Lib/GCC/ARMCortexM55/ &nbsp;<span style="color:#a0aec0;">(ll_aton precompiled libs)</span><br/>
-  │&nbsp;&nbsp; ├── Inc/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(AI runtime headers)</span><br/>
-  │&nbsp;&nbsp; └── Npu/ll_aton/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(NPU low-level driver)</span><br/>
-  ├── Drivers/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(HAL + BSP)</span><br/>
-  ├── STM32N657xx.ld &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(linker script)</span><br/>
-  └── startup_stm32n657xx.s &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(startup assembly)</span>
-</div>
+    <span style="color:#fbd38d;">STM32N6570-DK_GettingStarted_PoseEstimation/</span><br/>
+    ├── Application/<br/>
+    │&nbsp;&nbsp; ├── Inc/<br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="app__config_8h.html" style="color:#fc8181;">app_config.h</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Dynamically injected configuration</span><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="app__camerapipeline_8h.html" style="color:#fc8181;">app_camerapipeline.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__spe_8h.html" style="color:#fc8181;">display_spe.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__mpe_8h.html" style="color:#fc8181;">display_mpe.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__keypoints__13_8h.html" style="color:#fc8181;">display_keypoints_13.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="display__keypoints__17_8h.html" style="color:#fc8181;">display_keypoints_17.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; ├── <a href="crop__img_8h.html" style="color:#fc8181;">crop_img.h</a><br/>
+    │&nbsp;&nbsp; │&nbsp;&nbsp; └── <a href="main_8h.html" style="color:#fc8181;">main.h</a><br/>
+    │&nbsp;&nbsp; └── Src/<br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="main_8c.html" style="color:#fc8181;">main.c</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Main inference loop & DCMIPP init</span><br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="app__camerapipeline_8c.html" style="color:#fc8181;">app_camerapipeline.c</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; MIPI CSI & DCMIPP dual-pipe config</span><br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="display__spe_8c.html" style="color:#fc8181;">display_spe.c</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Heatmap decoding & skeleton render</span><br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <a href="display__mpe_8c.html" style="color:#fc8181;">display_mpe.c</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; YOLOv8 multi-pose rendering</span><br/>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <a href="crop__img_8c.html" style="color:#fc8181;">crop_img.c</a><br/>
+    ├── Model/STM32N6570-DK/<br/>
+    │&nbsp;&nbsp; ├── <span style="color:#e94560;font-weight:600;">network.c</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Injected — Epoch scheduling logic</span><br/>
+    │&nbsp;&nbsp; ├── <span style="color:#e94560;font-weight:600;">network_ecblobs.h</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Injected — NPU execution blobs</span><br/>
+    │&nbsp;&nbsp; └── <span style="color:#e94560;font-weight:600;">network_atonbuf.xSPI2.raw</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#68d391;">&larr; Injected — Raw weight binary</span><br/>
+    ├── Middlewares/AI_Runtime/<br/>
+    │&nbsp;&nbsp; ├── Lib/GCC/ARMCortexM55/ &nbsp;<span style="color:#a0aec0;">(ll_aton precompiled static libraries)</span><br/>
+    │&nbsp;&nbsp; ├── Inc/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(AI runtime interface headers)</span><br/>
+    │&nbsp;&nbsp; └── Npu/ll_aton/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(Neural-ART low-level hardware drivers)</span><br/>
+    ├── Drivers/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(Hardware Abstraction Layer & BSP)</span><br/>
+    ├── STM32N657xx.ld &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(GCC linker script)</span><br/>
+    └── startup_stm32n657xx.s &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a0aec0;">(Cortex-M55 startup assembly)</span>
+  </div>
 
 
-<!-- BUILD AND FLASH SEQUENCE -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- BUILD AND FLASH SEQUENCE -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Build &amp; flash sequence — what common_deploy.py does step by step
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:20px;">
-  After ST Edge AI Core finishes, <code>common_deploy.py</code> reads the
-  <code>.conf</code> file and executes four operations in sequence.
-  Each step is a command that can be re-run manually if needed:
-</p>
+    Automated Build &amp; Flashing Sequence Orchestration
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:20px;">
+    Upon completion of the ST Edge AI Core compilation, the <code>common_deploy.py</code> orchestration script parses the configuration file to execute a strict, four-stage deployment protocol. Each discrete command isolated below operates autonomously but can be executed manually for debugging purposes:
+  </p>
 
-<!-- Step cards -->
-<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
+  <!-- Step cards -->
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
 
-  <!-- Step 1 -->
-  <div style="display:flex;gap:0;align-items:stretch;">
-    <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
-      <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
+    <!-- Step 1 -->
+    <div style="display:flex;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
+        <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
                   display:flex;align-items:center;justify-content:center;
                   color:white;font-weight:700;font-size:0.9em;flex-shrink:0;">1</div>
-      <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
-    </div>
-    <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
+        <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
                 padding:14px 18px;flex:1;margin-bottom:4px;">
-      <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
-        Inject generated files into the CubeIDE project
-      </div>
-      <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
+        <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+          Artifact Injection (Template Population)
+        </div>
+        <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
                   font-family:monospace;font-size:0.8em;color:#e2e8f0;line-height:1.8;">
-        <span style="color:#a0aec0;"># From the templates list in .conf:</span><br/>
-        cp network.c &rarr; Model/STM32N6570-DK/<br/>
-        cp network_ecblobs.h &rarr; Model/STM32N6570-DK/<br/>
-        cp network_atonbuf.xSPI2.raw &rarr; Model/STM32N6570-DK/<br/>
-        cp app_config.h &rarr; Application/STM32N6570-DK/Inc/
+          <span style="color:#a0aec0;"># Sourced from the templates array in the .conf definition:</span><br/>
+          cp network.c &rarr; Model/STM32N6570-DK/<br/>
+          cp network_ecblobs.h &rarr; Model/STM32N6570-DK/<br/>
+          cp network_atonbuf.xSPI2.raw &rarr; Model/STM32N6570-DK/<br/>
+          cp app_config.h &rarr; Application/STM32N6570-DK/Inc/
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Step 2 -->
-  <div style="display:flex;gap:0;align-items:stretch;">
-    <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
-      <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
+    <!-- Step 2 -->
+    <div style="display:flex;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
+        <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
                   display:flex;align-items:center;justify-content:center;
                   color:white;font-weight:700;font-size:0.9em;flex-shrink:0;">2</div>
-      <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
-    </div>
-    <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
+        <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
                 padding:14px 18px;flex:1;margin-bottom:4px;">
-      <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
-        Build the firmware (headless CubeIDE)
-      </div>
-      <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
+        <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+          Headless Cross-Compilation Execution
+        </div>
+        <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
                   font-family:monospace;font-size:0.8em;color:#e2e8f0;line-height:1.8;">
-        STM32CubeIDE --launcher.suppressErrors -nosplash \<br/>
-        &nbsp;&nbsp;-application org.eclipse.cdt.managedbuilder.core.headlessbuild \<br/>
-        &nbsp;&nbsp;-build STM32N6570-DK_GettingStarted_PoseEstimation/Debug<br/>
-        <span style="color:#a0aec0;"># Output: Debug/STM32N6570-DK_GettingStarted_PoseEstimation.bin</span>
+          STM32CubeIDE --launcher.suppressErrors -nosplash \<br/>
+          &nbsp;&nbsp;-application org.eclipse.cdt.managedbuilder.core.headlessbuild \<br/>
+          &nbsp;&nbsp;-build STM32N6570-DK_GettingStarted_PoseEstimation/Debug<br/>
+          <span style="color:#a0aec0;"># Target Artifact: Debug/STM32N6570-DK_GettingStarted_PoseEstimation.bin</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Step 3 -->
-  <div style="display:flex;gap:0;align-items:stretch;">
-    <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
-      <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
+    <!-- Step 3 -->
+    <div style="display:flex;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
+        <div style="width:34px;height:34px;background:#4a90e2;border-radius:50%;
                   display:flex;align-items:center;justify-content:center;
                   color:white;font-weight:700;font-size:0.9em;flex-shrink:0;">3</div>
-      <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
-    </div>
-    <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
+        <div style="width:2px;flex:1;background:#e2e8f0;margin:4px 0;"></div>
+      </div>
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
                 padding:14px 18px;flex:1;margin-bottom:4px;">
-      <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
-        Sign the binary (STM32N6 secure boot requirement)
-      </div>
-      <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
+        <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
+          Cryptographic Binary Signing
+        </div>
+        <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
                   font-family:monospace;font-size:0.8em;color:#e2e8f0;line-height:1.8;">
-        STM32SigningTool -s \<br/>
-        &nbsp;&nbsp;-bin Debug/STM32N6570-DK_GettingStarted_PoseEstimation.bin \<br/>
-        &nbsp;&nbsp;-nk -t ssbl -hv 2.3 \<br/>
-        &nbsp;&nbsp;-o Debug/STM32N6570-DK_GettingStarted_PoseEstimation_signed.bin<br/>
-        <span style="color:#a0aec0;"># The STM32N6 FSBL verifies this signature at boot</span>
+          STM32SigningTool -s \<br/>
+          &nbsp;&nbsp;-bin Debug/STM32N6570-DK_GettingStarted_PoseEstimation.bin \<br/>
+          &nbsp;&nbsp;-nk -t ssbl -hv 2.3 \<br/>
+          &nbsp;&nbsp;-o Debug/STM32N6570-DK_GettingStarted_PoseEstimation_signed.bin<br/>
+          <span style="color:#a0aec0;"># Mandatory authentication protocol verified by the STM32N6 FSBL upon boot</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Step 4 -->
-  <div style="display:flex;gap:0;align-items:stretch;">
-    <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
-      <div style="width:34px;height:34px;background:#38a169;border-radius:50%;
+    <!-- Step 4 -->
+    <div style="display:flex;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;">
+        <div style="width:34px;height:34px;background:#38a169;border-radius:50%;
                   display:flex;align-items:center;justify-content:center;
                   color:white;font-weight:700;font-size:0.9em;flex-shrink:0;">4</div>
-      <div style="width:2px;flex:1;background:transparent;"></div>
-    </div>
-    <div style="background:#f0fff4;border:1px solid #38a169;border-radius:8px;
+        <div style="width:2px;flex:1;background:transparent;"></div>
+      </div>
+      <div style="background:#f0fff4;border:1px solid #38a169;border-radius:8px;
                 padding:14px 18px;flex:1;margin-bottom:4px;">
-      <div style="font-weight:700;color:#276749;margin-bottom:8px;">
-        Flash — two separate commands, two separate addresses
-      </div>
-      <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
+        <div style="font-weight:700;color:#276749;margin-bottom:8px;">
+          Target Device Flashing (Partitioned Memory Mapping)
+        </div>
+        <div style="background:#1a1a2e;border-radius:6px;padding:10px 14px;
                   font-family:monospace;font-size:0.8em;color:#e2e8f0;line-height:1.8;">
-        <span style="color:#a0aec0;"># Flash FSBL (first-stage bootloader):</span><br/>
-        STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
-        &nbsp;&nbsp;-w Binary/ai_fsbl.hex<br/><br/>
-        <span style="color:#a0aec0;"># Flash signed firmware @ 0x70100000:</span><br/>
-        STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
-        &nbsp;&nbsp;-w Debug/*_signed.bin
-        <span style="color:#68d391;">0x70100000</span><br/><br/>
-        <span style="color:#a0aec0;"># Flash weight binary @ 0x70380000 (OctoFlash):</span><br/>
-        STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
-        &nbsp;&nbsp;-w Model/STM32N6570-DK/network_atonbuf.xSPI2.bin
-        <span style="color:#68d391;">0x70380000</span>
+          <span style="color:#a0aec0;"># Transfer First-Stage Bootloader (FSBL):</span><br/>
+          STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
+          &nbsp;&nbsp;-w Binary/ai_fsbl.hex<br/><br/>
+          <span style="color:#a0aec0;"># Transfer Cryptographically Signed Firmware (Target: 0x70100000):</span><br/>
+          STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
+          &nbsp;&nbsp;-w Debug/*_signed.bin
+          <span style="color:#68d391;">0x70100000</span><br/><br/>
+          <span style="color:#a0aec0;"># Transfer Serialized Weight Matrix (Target OctoFlash: 0x70380000):</span><br/>
+          STM32CubeProgrammer -c port=swd mode=HOTPLUG -hardRst \<br/>
+          &nbsp;&nbsp;-w Model/STM32N6570-DK/network_atonbuf.xSPI2.bin
+          <span style="color:#68d391;">0x70380000</span>
+        </div>
       </div>
     </div>
+
   </div>
 
-</div>
 
-
-<!-- WHY TWO FLASH ADDRESSES -->
-<div style="background:#1a1a2e;color:#e2e8f0;padding:22px 28px;
+  <!-- WHY TWO FLASH ADDRESSES -->
+  <div style="background:#1a1a2e;color:#e2e8f0;padding:22px 28px;
             border-radius:10px;margin-bottom:32px;border-left:5px solid #38a169;">
-  <div style="color:#68d391;font-weight:700;font-size:0.85em;
+    <div style="color:#68d391;font-weight:700;font-size:0.85em;
               letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
-    Why two flash addresses?
+      Architectural Rationale: Partitioned Memory Mapping
+    </div>
+    <p style="font-size:0.93em;line-height:1.8;margin:0 0 12px 0;">
+      The executable firmware (<strong>0x70100000</strong>) and the static model weights
+      (<strong>0x70380000</strong>) are isolated into discrete memory partitions. This topology physically decouples their respective update lifecycles and satisfies the platform's secure boot constraints.
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="background:rgba(99,179,237,0.1);border:1px solid #63b3ed;
+                border-radius:8px;padding:14px;">
+        <div style="color:#90cdf4;font-weight:700;margin-bottom:6px;">
+          0x70100000 — Executable Firmware Partition
+        </div>
+        <div style="color:#a0aec0;font-size:0.87em;line-height:1.6;">
+          Contains the compiled application logic (inference loop, MIPI pipeline, spatial post-processing). This partition remains static unless the core logic is modified. It requires cryptographic signing, as the First-Stage Bootloader (FSBL) verifies its signature prior to execution.
+        </div>
+      </div>
+      <div style="background:rgba(56,161,105,0.1);border:1px solid #38a169;
+                border-radius:8px;padding:14px;">
+        <div style="color:#68d391;font-weight:700;margin-bottom:6px;">
+          0x70380000 — Static Weight Payload
+        </div>
+        <div style="color:#a0aec0;font-size:0.87em;line-height:1.6;">
+          Contains the raw, serialized INT8 model parameters (2.924 MB). Because this data is mapped strictly as read-only memory (ROM) and lacks an execution context, it bypasses the signature requirement. This permits rapid, iterative model swapping without firmware recompilation.
+        </div>
+      </div>
+    </div>
   </div>
-  <p style="font-size:0.93em;line-height:1.8;margin:0 0 12px 0;">
-    The firmware (<strong>0x70100000</strong>) and the model weights
-    (<strong>0x70380000</strong>) are flashed separately because they
-    have completely different update lifecycles.
+
+
+  <!-- BOOT SWITCH PROCEDURE -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+            border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
+    Hardware Boot Configuration Protocol
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    The STM32N6570-DK utilizes dedicated physical hardware switches to dictate the boot memory origin upon a power-on reset (POR). Improper configuration of these hardware selectors is the primary cause of silent execution failures following an ostensibly successful deployment.
   </p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-    <div style="background:rgba(99,179,237,0.1);border:1px solid #63b3ed;
-                border-radius:8px;padding:14px;">
-      <div style="color:#90cdf4;font-weight:700;margin-bottom:6px;">
-        0x70100000 — Firmware
-      </div>
-      <div style="color:#a0aec0;font-size:0.87em;line-height:1.6;">
-        The compiled C code: main loop, camera pipeline, display, postprocessor.
-        Changes rarely — only when you modify the application logic.
-        Must be signed before flashing (FSBL verifies signature at boot).
-      </div>
-    </div>
-    <div style="background:rgba(56,161,105,0.1);border:1px solid #38a169;
-                border-radius:8px;padding:14px;">
-      <div style="color:#68d391;font-weight:700;margin-bottom:6px;">
-        0x70380000 — Model weights
-      </div>
-      <div style="color:#a0aec0;font-size:0.87em;line-height:1.6;">
-        The raw INT8 weight binary (<code>network_atonbuf.xSPI2.bin</code>),
-        2.924 MB. Changes every time you deploy a different model.
-        Not signed — read-only data, no execution.
-      </div>
-    </div>
-  </div>
-</div>
 
-
-<!-- BOOT SWITCH PROCEDURE -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
-            border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  Boot switch procedure
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The STM32N6570-DK has two boot switches that control where the chip looks
-  for code at power-on. Getting these wrong is the most common reason
-  deployment appears to succeed but the board does nothing.
-</p>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;">
-  <div style="background:#fff5f5;border:2px solid #e94560;border-radius:10px;padding:18px;">
-    <div style="font-weight:700;color:#c53030;font-size:1em;margin-bottom:8px;">
-      &#128280; BOOT switches RIGHT
-    </div>
-    <div style="color:#742a2a;font-size:0.88em;line-height:1.7;margin-bottom:10px;">
-      <strong>Flashing mode.</strong> Set this <em>before</em> running
-      <code>python stm32ai_main.py operation_mode=deployment</code>.
-      The board connects via ST-Link and accepts the flash commands.
-    </div>
-    <div style="background:#1a1a2e;border-radius:6px;padding:8px 12px;
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;">
+    <div style="background:#fff5f5;border:2px solid #e94560;border-radius:10px;padding:18px;">
+      <div style="font-weight:700;color:#c53030;font-size:1em;margin-bottom:8px;">
+        System Bootloader Mode (Flashing State)
+      </div>
+      <div style="color:#742a2a;font-size:0.88em;line-height:1.7;margin-bottom:10px;">
+        Must be configured <em>prior</em> to initiating the <code>deployment</code> operation mode. This state forces the microcontroller to boot from system memory, allowing the ST-Link interface to establish a connection and write data to the external OctoFlash.
+      </div>
+      <div style="background:#1a1a2e;border-radius:6px;padding:8px 12px;
                 font-family:monospace;font-size:0.8em;color:#fc8181;">
-      BOOT0 = 1, BOOT1 = 1
+        Switch Position: RIGHT (BOOT0 = 1, BOOT1 = 1)
+      </div>
     </div>
-  </div>
-  <div style="background:#f0fff4;border:2px solid #38a169;border-radius:10px;padding:18px;">
-    <div style="font-weight:700;color:#276749;font-size:1em;margin-bottom:8px;">
-      &#9654; BOOT switches LEFT
-    </div>
-    <div style="color:#2f855a;font-size:0.88em;line-height:1.7;margin-bottom:10px;">
-      <strong>Run mode.</strong> Set this <em>after</em> deployment completes,
-      then power-cycle the board. The FSBL loads from OctoFlash,
-      verifies the signature, and starts the firmware. Inference begins.
-    </div>
-    <div style="background:#1a1a2e;border-radius:6px;padding:8px 12px;
+    <div style="background:#f0fff4;border:2px solid #38a169;border-radius:10px;padding:18px;">
+      <div style="font-weight:700;color:#276749;font-size:1em;margin-bottom:8px;">
+        OctoFlash Execution Mode (Runtime State)
+      </div>
+      <div style="color:#2f855a;font-size:0.88em;line-height:1.7;margin-bottom:10px;">
+        Must be asserted <em>after</em> the flashing sequence concludes, followed by a hardware power-cycle. This instructs the FSBL to boot from the OctoFlash, execute cryptographic verification and initialize the primary firmware inference loop.
+      </div>
+      <div style="background:#1a1a2e;border-radius:6px;padding:8px 12px;
                 font-family:monospace;font-size:0.8em;color:#68d391;">
-      BOOT0 = 0, BOOT1 = 0
+        Switch Position: LEFT (BOOT0 = 0, BOOT1 = 0)
+      </div>
     </div>
   </div>
-</div>
 
-
-<!-- C FIRMWARE FILES -->
-<h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
+  <!-- C FIRMWARE FILES -->
+  <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  The C firmware — your handwritten files (all in Part 2)
-</h2>
-<p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  These are the files you actually wrote — not generated, not injected.
-  They implement the real-time application that runs on the board.
-  Every function is documented with call graphs in Part 2.
-</p>
+    Custom Application Firmware (Source References)
+  </h2>
+  <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
+    The following artifacts constitute the primary application layer executing natively on the STM32N6570-DK. With the exception of the injected configuration bridge (<code>app_config.h</code>), these files represent custom, hand-authored C logic driving the real-time inference loop. Comprehensive call graphs, dependency mappings and line-by-line function documentation for each module are available in Part 2.
+  </p>
 
-<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
 
-  <a href="main_8c.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #e94560;
+    <a href="main_8c.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #e94560;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#c53030;">main.c</div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        System init &bull; DCMIPP setup &bull; inference loop &bull;
-        calls <code>LL_ATON_RT_Main()</code> to trigger NPU epoch execution
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#c53030;">main.c</div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            Hardware initialization &bull; DCMIPP configuration &bull; Main inference loop &bull;
+            Invokes <code>LL_ATON_RT_Main()</code> to initiate NPU hardware execution
+          </div>
+        </div>
+        <span style="color:#e94560;font-size:1.1em;">&rarr;</span>
       </div>
-    </div>
-    <span style="color:#e94560;font-size:1.1em;">&rarr;</span>
-  </div>
-  </a>
+    </a>
 
-  <a href="app__config_8h.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #ed8936;
+    <a href="app__config_8h.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #ed8936;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#92400e;">app_config.h</div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        Generated by <code>gen_h_file.py</code> &bull; injected by <code>common_deploy.py</code> &bull;
-        defines NN_HEIGHT=192, KEYPOINTS_NB=13, CONF_THRESHOLD=0.4
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#92400e;">app_config.h</div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            Dynamically injected configuration synthesized by <code>gen_h_file.py</code> &bull;
+            Defines core architectural constants: NN_HEIGHT=192, KEYPOINTS_NB=13, CONF_THRESHOLD=0.4
+          </div>
+        </div>
+        <span style="color:#ed8936;font-size:1.1em;">&rarr;</span>
       </div>
-    </div>
-    <span style="color:#ed8936;font-size:1.1em;">&rarr;</span>
-  </div>
-  </a>
+    </a>
 
-  <a href="app__camerapipeline_8c.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #9f7aea;
+    <a href="app__camerapipeline_8c.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #9f7aea;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#553c9a;">app_camerapipeline.c</div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        MIPI CSI-2 init &bull; DCMIPP dual-pipe config &bull;
-        display pipe (continuous → PSRAM) + NN pipe (snapshot → npuRAM4)
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#553c9a;">app_camerapipeline.c</div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            MIPI CSI-2 interface initialization &bull; DCMIPP dual-pipeline orchestration &bull;
+            Routes continuous display feed to Hexa-SPI PSRAM and discrete NPU snapshots to npuRAM4
+          </div>
+        </div>
+        <span style="color:#9f7aea;font-size:1.1em;">&rarr;</span>
       </div>
-    </div>
-    <span style="color:#9f7aea;font-size:1.1em;">&rarr;</span>
-  </div>
-  </a>
+    </a>
 
-  <a href="display__spe_8c.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #4299e1;
+    <a href="display__spe_8c.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #4299e1;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#2b6cb0;">display_spe.c</div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        Reads float32 heatmaps from npuRAM5 &bull; argmax decode &bull;
-        draws 13-keypoint skeleton on LCD foreground layer
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#2b6cb0;">display_spe.c</div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            Single-Pose Estimation (SPE) post-processor &bull; Ingests FP32 heatmaps from npuRAM5 &bull;
+            Executes ArgMax decoding &bull; Renders the 13-keypoint skeletal overlay on the LCD foreground
+          </div>
+        </div>
+        <span style="color:#4299e1;font-size:1.1em;">&rarr;</span>
       </div>
-    </div>
-    <span style="color:#4299e1;font-size:1.1em;">&rarr;</span>
-  </div>
-  </a>
+    </a>
 
-  <a href="display__mpe_8c.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #38a169;
+    <a href="display__mpe_8c.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #38a169;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#276749;">display_mpe.c</div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        Multi-pose display for YOLOv8n &bull; bounding boxes + NMS results &bull;
-        17-keypoint COCO skeleton rendering
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#276749;">display_mpe.c</div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            Multi-Pose Estimation (MPE) post-processor optimized for YOLOv8n &bull;
+            Handles bounding box regression, Non-Maximum Suppression (NMS) and 17-keypoint COCO skeleton rendering
+          </div>
+        </div>
+        <span style="color:#38a169;font-size:1.1em;">&rarr;</span>
       </div>
-    </div>
-    <span style="color:#38a169;font-size:1.1em;">&rarr;</span>
-  </div>
-  </a>
+    </a>
 
-  <a href="display__keypoints__13_8h.html" style="text-decoration:none;">
-  <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #718096;
+    <a href="display__keypoints__13_8h.html" style="text-decoration:none;">
+      <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-left:4px solid #718096;
               border-radius:0 8px 8px 0;padding:14px 18px;display:flex;
               justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-family:monospace;font-weight:700;color:#4a5568;">
-        display_keypoints_13.h / display_keypoints_17.h
+        <div>
+          <div style="font-family:monospace;font-weight:700;color:#4a5568;">
+            display_keypoints_13.h / display_keypoints_17.h
+          </div>
+          <div style="color:#718096;font-size:0.85em;margin-top:3px;">
+            Skeletal topology matrices &bull; Defines the anatomical connectivity pairs for rendering
+            the 13-keypoint (MoveNet) and 17-keypoint (COCO/YOLOv8) models
+          </div>
+        </div>
+        <span style="color:#718096;font-size:1.1em;">&rarr;</span>
       </div>
-      <div style="color:#718096;font-size:0.85em;margin-top:3px;">
-        Skeleton connectivity tables — which keypoints to connect with lines
-        for 13-keypoint (MoveNet) and 17-keypoint (COCO/YOLOv8) models
-      </div>
-    </div>
-    <span style="color:#718096;font-size:1.1em;">&rarr;</span>
+    </a>
+
   </div>
-  </a>
-
-</div>
-
 
 <!-- COMPLETE PIPELINE RECAP -->
 <h2 style="color:#1a1a2e;font-size:1.1em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:6px;margin-bottom:16px;">
-  The complete pipeline — from YAML to running board
+  The complete pipeline: from YAML to running board
 </h2>
 
 <div style="background:#1a1a2e;color:#e2e8f0;padding:22px 28px;
