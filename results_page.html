@@ -98,13 +98,13 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
     Chapter 6 &mdash; Results &amp; Analysis
   </div>
   <h1 style="color:#fff;font-size:2em;font-weight:800;margin:0 0 14px 0;line-height:1.2;">
-    What the Numbers Tell Us
+    NPU Offload Rate vs. Model Architecture
   </h1>
   <p style="color:#a0aec0;font-size:1em;margin:0 0 24px 0;max-width:640px;line-height:1.7;">
-    A cross-model comparative analysis connecting the architecture decisions
-    of the Neural-ART NPU to the performance numbers we measured.
-    This chapter answers the central question of the project:
-    <em>how well does a CNN-centric NPU handle different neural network architectures?</em>
+    This chapter presents the measured performance data for all three deployed models
+    and relates the results back to the Neural-ART NPU's instruction set.
+    The core question is whether a CNN-centric NPU can handle non-CNN architectures at real-time speed.
+
   </p>
 </div>
 
@@ -118,79 +118,99 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The most important finding of this project is not a single number — it is a pattern.
-  The NPU offload rate is not a function of model size, weight count, or number of
-  parameters. It is a function of <strong>which operations the model uses</strong>.
-  The three models we deployed demonstrate this with unusual clarity.
+  The NPU offload rate shows little correlation with overall model size or parameter count. 
+  Instead, it is primarily determined by the specific operations required by the model architecture.
+  The performance metrics from the three deployed models provide clear insights into the capabilities and limitations of the Neural-ART NPU.
+
 </p>
 
 <!-- Visual offload comparison -->
 <div style="margin:0 0 24px 0;">
-<svg width="100%" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 275" xmlns="http://www.w3.org/2000/svg">
 
   <!-- Title -->
-  <text x="340" y="20" text-anchor="middle" font-size="11"
+  <text x="340" y="20" text-anchor="middle" font-size="12"
         font-weight="700" fill="#1a1a2e" font-family="sans-serif">
-    NPU Offload Rate vs Architecture Type
+    NPU Offload Rate by Architecture
   </text>
 
-  <!-- Y axis labels -->
-  <text x="55" y="48"  text-anchor="end" font-size="9"
-        fill="#718096" font-family="sans-serif">100%</text>
-  <text x="55" y="88"  text-anchor="end" font-size="9"
-        fill="#718096" font-family="sans-serif">80%</text>
-  <text x="55" y="128" text-anchor="end" font-size="9"
-        fill="#718096" font-family="sans-serif">60%</text>
-  <text x="55" y="168" text-anchor="end" font-size="9"
-        fill="#718096" font-family="sans-serif">40%</text>
+  <!--
+    Chart area: x=75..620, y=38(=100%) to y=218(=0%)
+    Scale: 180 px = 100%  →  1% = 1.8 px
+    Bar heights (from 0% baseline at y=218):
+      MoveNet  94.7% → h=170, top=48
+      YOLOv8n  87.9% → h=158, top=60
+      TinyBERT 64.4% → h=116, top=102
+  -->
 
-  <!-- Grid lines -->
-  <line x1="60" y1="44"  x2="660" y2="44"  stroke="#f0f0f0" stroke-width="1"/>
-  <line x1="60" y1="84"  x2="660" y2="84"  stroke="#f0f0f0" stroke-width="1"/>
-  <line x1="60" y1="124" x2="660" y2="124" stroke="#f0f0f0" stroke-width="1"/>
-  <line x1="60" y1="164" x2="660" y2="164" stroke="#f0f0f0" stroke-width="1"/>
-  <line x1="60" y1="184" x2="660" y2="184" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Y-axis gridlines + labels (every 20%) -->
+  <line x1="75" y1="38"  x2="620" y2="38"  stroke="#e8edf2" stroke-width="1"/>
+  <text x="68" y="42"  text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">100%</text>
 
-  <!-- MoveNet bar — 94.7% -->
-  <rect x="100" y="51" width="120" height="133" rx="6" fill="#38a169"/>
-  <text x="160" y="45" text-anchor="middle" font-size="12"
-        font-weight="800" fill="#276749" font-family="sans-serif">94.7%</text>
-  <text x="160" y="198" text-anchor="middle" font-size="10"
-        font-weight="700" fill="#276749" font-family="sans-serif">MoveNet</text>
-  <text x="160" y="210" text-anchor="middle" font-size="8"
-        fill="#718096" font-family="sans-serif">CNN pure</text>
+  <line x1="75" y1="74"  x2="620" y2="74"  stroke="#e8edf2" stroke-width="1"/>
+  <text x="68" y="78"  text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">80%</text>
 
-  <!-- YOLOv8 bar — 87.9% -->
-  <rect x="280" y="67" width="120" height="117" rx="6" fill="#d69e2e"/>
-  <text x="340" y="61" text-anchor="middle" font-size="12"
-        font-weight="800" fill="#92400e" font-family="sans-serif">87.9%</text>
-  <text x="340" y="198" text-anchor="middle" font-size="10"
-        font-weight="700" fill="#92400e" font-family="sans-serif">YOLOv8n</text>
-  <text x="340" y="210" text-anchor="middle" font-size="8"
+  <line x1="75" y1="110" x2="620" y2="110" stroke="#e8edf2" stroke-width="1"/>
+  <text x="68" y="114" text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">60%</text>
+
+  <line x1="75" y1="146" x2="620" y2="146" stroke="#e8edf2" stroke-width="1"/>
+  <text x="68" y="150" text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">40%</text>
+
+  <line x1="75" y1="182" x2="620" y2="182" stroke="#e8edf2" stroke-width="1"/>
+  <text x="68" y="186" text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">20%</text>
+
+  <!-- 0% baseline -->
+  <line x1="75" y1="218" x2="620" y2="218" stroke="#cbd5e0" stroke-width="1.5"/>
+  <text x="68" y="222" text-anchor="end" font-size="9" fill="#9aabb8" font-family="sans-serif">0%</text>
+
+  <!-- Y-axis spine -->
+  <line x1="75" y1="38" x2="75" y2="218" stroke="#cbd5e0" stroke-width="1.5"/>
+
+  <!-- ── MoveNet bar: 94.7% ── -->
+  <rect x="145" y="48" width="100" height="170" rx="5" ry="5" fill="#38a169"/>
+  <text x="195" y="41" text-anchor="middle" font-size="13" font-weight="800"
+        fill="#276749" font-family="sans-serif">94.7%</text>
+  <text x="195" y="237" text-anchor="middle" font-size="11" font-weight="700"
+        fill="#276749" font-family="sans-serif">MoveNet</text>
+  <text x="195" y="251" text-anchor="middle" font-size="9"
+        fill="#718096" font-family="sans-serif">CNN (pure)</text>
+
+  <!-- ── YOLOv8n bar: 87.9% ── -->
+  <rect x="290" y="60" width="100" height="158" rx="5" ry="5" fill="#d69e2e"/>
+  <text x="340" y="53" text-anchor="middle" font-size="13" font-weight="800"
+        fill="#92400e" font-family="sans-serif">87.9%</text>
+  <text x="340" y="237" text-anchor="middle" font-size="11" font-weight="700"
+        fill="#92400e" font-family="sans-serif">YOLOv8n</text>
+  <text x="340" y="251" text-anchor="middle" font-size="9"
         fill="#718096" font-family="sans-serif">CNN + head</text>
 
-  <!-- TinyBERT bar — 64.4% -->
-  <rect x="460" y="112" width="120" height="72" rx="6" fill="#e94560"/>
-  <text x="520" y="106" text-anchor="middle" font-size="12"
-        font-weight="800" fill="#c53030" font-family="sans-serif">64.4%</text>
-  <text x="520" y="198" text-anchor="middle" font-size="10"
-        font-weight="700" fill="#c53030" font-family="sans-serif">TinyBERT</text>
-  <text x="520" y="210" text-anchor="middle" font-size="8"
+  <!-- ── TinyBERT bar: 64.4% ── -->
+  <rect x="435" y="102" width="100" height="116" rx="5" ry="5" fill="#e94560"/>
+  <text x="485" y="95"  text-anchor="middle" font-size="13" font-weight="800"
+        fill="#c53030" font-family="sans-serif">64.4%</text>
+  <text x="485" y="237" text-anchor="middle" font-size="11" font-weight="700"
+        fill="#c53030" font-family="sans-serif">TinyBERT</text>
+  <text x="485" y="251" text-anchor="middle" font-size="9"
         fill="#718096" font-family="sans-serif">Transformer</text>
 
-  <!-- Annotation: 30% gap -->
-  <line x1="520" y1="112" x2="520" y2="51" stroke="#94a3b8"
+  <!-- ── Gap annotation ──
+       Horizontal reference raised to y=32, above all value labels (lowest label
+       is MoveNet at y=41). Vertical line runs from y=32 down to TinyBERT top at y=102.
+       Label sits at the midpoint of the vertical segment: y=(32+102)/2 = 67.
+  -->
+  <line x1="195" y1="32"  x2="535" y2="32"  stroke="#94a3b8"
         stroke-width="1" stroke-dasharray="3 2"/>
-  <line x1="160" y1="51"  x2="520" y2="51" stroke="#94a3b8"
+  <line x1="535" y1="32"  x2="535" y2="102" stroke="#94a3b8"
         stroke-width="1" stroke-dasharray="3 2"/>
-  <text x="340" y="46" text-anchor="middle" font-size="8"
-        fill="#94a3b8" font-family="sans-serif">30.3% gap</text>
+  <text x="540" y="71" text-anchor="start" font-size="10" font-weight="600"
+        fill="#64748b" font-family="sans-serif">30.3% gap</text>
+
 </svg>
 </div>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
   The 30-point gap between MoveNet (94.7%) and TinyBERT (64.4%) is not due to
-  model size — TinyBERT actually has <em>fewer</em> weights (2.06 MB vs 2.92 MB).
+  model size - TinyBERT actually has <em>fewer</em> weights (2.06 MB vs 2.92 MB).
   It is entirely due to the operations required by each architecture:
 </p>
 
@@ -240,12 +260,14 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 ════════════════════════════════════════════════════════════ -->
 <h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:20px;">
-  6.2 &mdash; Latency: Why SW Epochs Dominate the Runtime
+  6.2 &mdash; Latency: SW Epoch Cost as the Dominant Factor
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The latency numbers reveal something important: a small number of SW epochs
-  can dominate the total inference time far beyond their numerical proportion.
+  The latency breakdown shows that SW epoch count, not total epoch count,
+  determines inference time. A small number of CPU-side epochs can account
+  for the majority of end-to-end latency.
+
 </p>
 
 <!-- Latency comparison -->
@@ -253,7 +275,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 <svg width="100%" viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
   <text x="20" y="20" font-size="11" font-weight="700"
         fill="#1a1a2e" font-family="sans-serif">
-    Inference latency (ms) — lower is better
+    Inference latency (ms) - lower is better
   </text>
 
   <!-- MoveNet: 22ms -->
@@ -303,7 +325,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 8px 0;">
         An EC epoch runs entirely in the Neural-ART hardware.
         The STRENG stream engines prefetch weights from OctoFlash while the
-        CONVACC units compute — <strong>weight loading and computation overlap</strong>.
+        CONVACC units compute - <strong>weight loading and computation overlap</strong>.
         For a typical Conv layer: ~0.15–0.3 ms.
       </p>
       <div style="background:#1a1a2e;border-radius:6px;padding:8px 12px;
@@ -317,7 +339,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       </div>
       <p style="color:#4a5568;font-size:0.88em;line-height:1.7;margin:0 0 8px 0;">
         A SW epoch runs on the Cortex-M55 with Helium SIMD.
-        It requires CPU cycles, memory bandwidth, and
+        It requires CPU cycles, memory bandwidth and
         <strong>cache invalidation</strong> when crossing NPU/CPU boundaries.
         Softmax over a 512-token sequence: ~5–15 ms per occurrence.
       </p>
@@ -336,7 +358,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
               letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
     Key insight — the boundary crossing cost
   </div>
-  Every time execution switches from an EC epoch to a SW epoch (or vice versa),
+  Every time execution switches from an EC epoch to a SW epoch (or vice versa)
   the firmware must synchronise the NPU and CPU memory views.
   The NPU writes activations to npuRAM5 with no cache coherency guarantee —
   the CPU must invalidate its cache before reading those values.
@@ -352,12 +374,13 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 ════════════════════════════════════════════════════════════ -->
 <h2 style="color:#1a1a2e;font-size:1.2em;font-weight:700;
             border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:20px;">
-  6.3 &mdash; Memory: An Unexpected Finding
+  6.3 &mdash; Memory Layout and Usage
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  Memory usage reveals a counterintuitive result: TinyBERT uses significantly
-  <em>less</em> SRAM than MoveNet, despite having more total epochs.
+  Despite having more total epochs, TinyBERT uses significantly less SRAM than MoveNet.
+  This is a consequence of the input data type: text tokens occupy far less buffer space
+  than a 192x192 image tensor.
 </p>
 
 <!-- Memory comparison table -->
@@ -413,7 +436,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 </div>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  TinyBERT uses only 251 KB of SRAM — less than MoveNet's npuRAM5 alone.
+  TinyBERT uses only 251 KB of SRAM - less than MoveNet's npuRAM5 alone.
   This is because BERT processes <strong>sequential text tokens</strong>,
   not large 2D image tensors. A 192×192 input image requires 110 KB of buffer
   just for the input. A 512-token text sequence requires far less spatial memory,
@@ -425,7 +448,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
   <strong style="color:#2b6cb0;">Practical implication:</strong>
   <span style="color:#2c5282;font-size:0.9em;">
   TinyBERT's low SRAM usage means it could theoretically be deployed alongside
-  a vision model on the same board — the memory footprints do not conflict.
+  a vision model on the same board - the memory footprints do not conflict.
   The bottleneck is latency, not memory. This suggests that hybrid architectures
   (vision + language on the same MCU) could be viable if the Transformer
   operations were better supported by the NPU hardware.
@@ -442,8 +465,9 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:20px;">
-  The three deployments answer the central question of this project with
-  quantitative precision. Here are the four conclusions we draw from the data.
+  The performance metrics from the three deployed models provide clear insights into 
+  the NPU's capabilities. Based on the latency, memory and offload data, four key 
+  takeaways emerge:
 </p>
 
 <!-- Conclusion cards -->
@@ -455,7 +479,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       1. The Neural-ART NPU is excellent for CNN inference
     </div>
     <p style="color:#2f855a;font-size:0.9em;line-height:1.7;margin:0;">
-      MoveNet achieves 94.7% NPU offload and 22 ms latency — well within real-time
+      MoveNet achieves 94.7% NPU offload and 22 ms latency - well within real-time
       requirements for a 30 fps application. YOLOv8n achieves 87.9% and 32 ms,
       also real-time and with the added capability of detecting multiple people
       simultaneously. For CNN-based vision tasks, the Neural-ART NPU delivers
@@ -469,7 +493,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       2. Detection heads add overhead but remain manageable
     </div>
     <p style="color:#78350f;font-size:0.9em;line-height:1.7;margin:0;">
-      YOLOv8n's 18 SW epochs (vs MoveNet's 4) come entirely from the detection head —
+      YOLOv8n's 18 SW epochs (vs MoveNet's 4) come entirely from the detection head -
       NMS, reshape, transpose. The backbone is still 100% on the NPU.
       The 7-point gap in offload rate (94.7% → 87.9%) translates to only a
       10 ms latency increase. Models with complex post-processing heads
@@ -480,15 +504,14 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
   <div style="background:#fff5f5;border:1px solid #e94560;border-left:5px solid #e94560;
               border-radius:0 10px 10px 0;padding:18px 22px;">
     <div style="font-weight:700;color:#c53030;font-size:1em;margin-bottom:8px;">
-      3. Transformers hit a hard architectural wall
+      3. Architectural constraints of Transformers
     </div>
     <p style="color:#742a2a;font-size:0.9em;line-height:1.7;margin:0;">
-      TinyBERT's 96 SW epochs are not a deployment issue — they reflect a fundamental
-      mismatch between Transformer operations and the Neural-ART instruction set.
-      Softmax, LayerNorm, and attention MatMul are the <em>core</em> of every
-      Transformer block. You cannot remove them without changing the architecture.
-      The 64.4% NPU offload and &gt;100 ms latency make real-time Transformer
-      inference impossible on this hardware in its current form.
+      TinyBERT's 96 SW epochs reflect a direct mismatch between Transformer 
+      operations and the Neural-ART instruction set. Softmax, LayerNorm and 
+      attention MatMul form the core of every Transformer block. The resulting 
+      64.4% NPU offload and >100 ms latency currently preclude real-time 
+      Transformer inference on this hardware.
     </p>
   </div>
 
@@ -498,7 +521,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       4. Memory is not the bottleneck — operations are
     </div>
     <p style="color:#2c5282;font-size:0.9em;line-height:1.7;margin:0;">
-      TinyBERT uses only 2.3 MB total (vs 4.6 MB for MoveNet) —
+      TinyBERT uses only 2.3 MB total (vs 4.6 MB for MoveNet) -
       it fits comfortably in the available memory. The problem is not space
       but compute: the 96 CPU fallback operations create a pipeline stall
       at every Transformer block boundary. Future NPU designs that include
@@ -518,14 +541,14 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
 </h2>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  This project opens several directions for future investigation:
+  The results identify several areas where further work would be valuable:
 </p>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;">
 
   <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">
     <div style="font-weight:700;color:#1a1a2e;margin-bottom:8px;">
-      &#9889; Quantization-Aware Training for Transformers
+      &#9889; Quantization-Aware Training (QAT)
     </div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
       QAT could reduce the accuracy loss from PTQ on TinyBERT,
@@ -539,7 +562,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
       &#128200; Higher resolution models
     </div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
-      MoveNet at 224×224 achieves 62.3% OKS vs 57.6% at 192×192.
+      MoveNet at 224x224 achieves 62.3% OKS vs 57.6% at 192x192.
       The latency increase (27.6 ms vs 22 ms) is still within real-time bounds.
       A systematic study of the resolution-accuracy-latency trade-off
       would guide model selection for different applications.
@@ -552,8 +575,8 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
     </div>
     <p style="color:#4a5568;font-size:0.87em;line-height:1.6;margin:0;">
       TinyBERT's low SRAM footprint (251 KB) leaves room to run it
-      alongside a vision model. A cascaded pipeline —
-      YOLOv8n detects people, TinyBERT classifies actions —
+      alongside a vision model. A cascaded pipeline -
+      YOLOv8n detects people, TinyBERT classifies actions -
       could be explored as an embedded multimodal system.
     </p>
   </div>
@@ -578,7 +601,7 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
             border-radius:10px;margin-bottom:32px;border-left:5px solid #7c9ef8;">
   <div style="color:#7c9ef8;font-weight:700;font-size:0.85em;
               letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">
-    Final answer to the research question
+    Summary
   </div>
   <p style="font-size:0.95em;line-height:1.8;margin:0;">
     The Neural-ART NPU is a <strong style="color:#68d391;">highly effective</strong>
@@ -586,14 +609,14 @@ $(document).ready(function(){initNavTree('results_page.html',''); initResizable(
     It achieves real-time performance on both single-person (MoveNet, 22 ms)
     and multi-person (YOLOv8n, 32 ms) pose estimation.
     However, it is <strong style="color:#fc8181;">fundamentally limited</strong>
-    for Transformer architectures: the absence of Softmax, LayerNorm, and
+    for Transformer architectures: the absence of Softmax, LayerNorm and
     general MatMul acceleration in the NPU instruction set forces 35% of
     TinyBERT's computation onto the CPU, making real-time Transformer inference
-    impossible. The architecture of the NPU — built around the CONVACC unit
-    and STRENG stream engines — reflects a deliberate design choice for the
+    impossible. The architecture of the NPU - built around the CONVACC unit
+    and STRENG stream engines - reflects a deliberate design choice for the
     vision workloads that dominate embedded AI today.
-    As Transformer models move to the edge, this trade-off will become
-    the central engineering challenge for next-generation NPU design.
+    Future NPU designs targeting edge AI will need to address this trade-off explicitly,
+    particularly as Transformer-based models become more common in on-device applications.
   </p>
 </div>
 
