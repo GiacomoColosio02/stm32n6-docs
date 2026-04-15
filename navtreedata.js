@@ -26,9 +26,9 @@ var NAVTREE =
 [
   [ "STM32N6 NPU Deployment — Politecnico di Milano", "index.html", [
     [ "HOMEPAGE: Neural Network Deployment on STM32N6 NPU", "index.html", null ],
-    [ "Part 2 — Code Reference", "part2_page.html", null ],
+   [ "Part 1 — Narrative Explanations", "part1_page.html", "part1_page" ], 
+   [ "Part 2 — Code Reference", "part2_page.html", null ],
     [ "Part 3 — Module Groups", "part3_page.html", null ],
-    [ "Part 1 — Narrative Explanations", "part1_page.html", "part1_page" ],
     [ "Module Groups", "modules.html", "modules" ],
     [ "Python Modules", "namespaces.html", [
       [ "List", "namespaces.html", "namespaces_dup" ]
