@@ -256,7 +256,7 @@ $(document).ready(function(){initNavTree('external__memory__mgt_8py_source.html'
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            cam_res_height = cam_buffer_height = <span class="stringliteral">&quot;VGA_RES_HEIGHT&quot;</span></div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">if</span> <span class="stringliteral">&#39;cam_res&#39;</span> <span class="keywordflow">not</span> <span class="keywordflow">in</span> locals():</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        ValueError(<span class="stringliteral">&quot;Needed camera resolution ({}x{}) exceeds VGA format.&quot;</span>.format(</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;Needed camera resolution ({}x{}) exceeds VGA format.&quot;</span>.format(</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            network_width, network_height))</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="comment"># =========================================================================</span></div>
