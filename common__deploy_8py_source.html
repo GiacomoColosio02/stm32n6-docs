@@ -437,12 +437,12 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            <span class="comment"># Step 3: Validate that the model fits in total available memory</span></div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;            <span class="keywordflow">if</span> needed_rom &gt; externalFlashSize_inBytes + internalFlashSize_inBytes - application_size_flash_inBytes:</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                <span class="keywordflow">raise</span> ValueError(</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                    <span class="stringliteral">&quot;\033[31m The Model is too large (too much weights) to fit in the Board. &quot;</span></div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                    <span class="stringliteral">&quot;It won&#39;t be compiled\033[39m&quot;</span>)</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                    <span class="stringliteral">&quot;\033[31m The model is too large (too many weights) to fit on the board. &quot;</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                    <span class="stringliteral">&quot;It won&#39;t be compiled.\033[39m&quot;</span>)</div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;            <span class="keywordflow">if</span> needed_ram &gt; externalRamSize_inBytes + available_default_ram:</div>
 <div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                <span class="keywordflow">raise</span> ValueError(</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                    <span class="stringliteral">&quot;\033[31m The Model is too large (too much activations) to fit in the Board. &quot;</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                    <span class="stringliteral">&quot;It won&#39;t be compiled\033[39m&quot;</span>)</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                    <span class="stringliteral">&quot;\033[31m The model is too large (too many activations) to fit on the board. &quot;</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                    <span class="stringliteral">&quot;It won&#39;t be compiled.\033[39m&quot;</span>)</div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;            <span class="comment"># Step 4: Determine if weight splitting is needed</span></div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            split_weights = needed_rom &gt; (internalFlashSize_inBytes - application_size_flash_inBytes)</div>
@@ -461,7 +461,7 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            opt.optimization = optimization</div>
 <div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160; </div>
 <div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;            <span class="keywordflow">if</span> split_ram:</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Dispatch activations in different ram pools to fit the large model&quot;</span>)</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Dispatch activations in different RAM pools to fit the large model.&quot;</span>)</div>
 <div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                stmaic.compile(session=session, options=opt, target=session._board_config)</div>
 <div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                stmaic.compile(session=session, options=opt)</div>
@@ -477,7 +477,7 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
 <div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            <span class="comment"># Step 6: Annotate weight arrays with Flash section attributes</span></div>
 <div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;            <span class="keywordflow">if</span> split_weights:</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Dispatch weights between internal and external flash to fit the large model&quot;</span>)</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Dispatch weights between internal and external Flash to fit the large model.&quot;</span>)</div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <a class="code" href="namespacecommon__deploy.html#aa0f3bf8d5702d2cfa058d2319101d875">_dispatch_weights</a>(</div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                    internalFlashSizeFlash_KB=board.config.internalFlash_size,</div>
 <div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                    kernelFlash_KB=board.config.lib_size,</div>
@@ -487,7 +487,7 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                        session.generated_dir, <span class="stringliteral">&quot;network_data_params.c&quot;</span>)</div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                )</div>
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;            <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Weights fit in internal flash&quot;</span>)</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                print(<span class="stringliteral">&quot;[INFO] : Weights fit in internal Flash.&quot;</span>)</div>
 <div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                <a class="code" href="namespacecommon__deploy.html#a9c7419b88732f624fce0c24df0ecbdc5">_keep_internal_weights</a>(</div>
 <div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                    path_network_data_params=os.path.join(</div>
 <div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                        session.generated_dir, <span class="stringliteral">&quot;network_data_params.c&quot;</span>)</div>
@@ -843,7 +843,7 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160; </div>
 <div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;    <span class="comment"># Step 1: Validate that a board IP address was provided</span></div>
 <div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;    <span class="keywordflow">if</span> board_ip_address <span class="keywordflow">is</span> <span class="keywordtype">None</span>:</div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;        print(<span class="stringliteral">&quot;Board IP address is missing, unable to deploy on target&quot;</span>)</div>
+<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;        print(<span class="stringliteral">&quot;[FAIL] : Board IP address is missing, unable to deploy on target.&quot;</span>)</div>
 <div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
 <div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160; </div>
 <div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;    <span class="comment"># Step 2: Verify board reachability via ping</span></div>
@@ -875,7 +875,7 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;        <span class="stringliteral">&quot;ssh -o \&quot;StrictHostKeyChecking no\&quot; root@&quot;</span> + board_ip_address + <span class="stringliteral">&quot; \&quot;&quot;</span> + command + <span class="stringliteral">&quot;\&quot;&quot;</span>,</div>
 <div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;        shell=<span class="keyword">True</span>, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=300)</div>
 <div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;    <span class="keywordflow">if</span> ssh.returncode != 0:</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;        print(f<span class="stringliteral">&quot;[FAIL] deploy directory creation failed, code: {ssh.returncode}&quot;</span>)</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;        print(f<span class="stringliteral">&quot;[FAIL] : Deploy directory creation failed, code: {ssh.returncode}&quot;</span>)</div>
 <div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
 <div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160; </div>
 <div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;    <span class="comment"># Step 4: Generate class names file on disk</span></div>
