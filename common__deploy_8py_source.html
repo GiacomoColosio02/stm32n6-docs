@@ -922,11 +922,13 @@ $(document).ready(function(){initNavTree('common__deploy_8py_source.html',''); i
 <div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;        <span class="keywordflow">if</span> Path(item).suffix == script_extension:</div>
 <div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;            file_names.append(os.path.basename(item))</div>
 <div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160; </div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    <span class="keywordflow">for</span> file_name <span class="keywordflow">in</span> file_names:</div>
-<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;        <span class="keywordflow">if</span> <span class="stringliteral">&quot;launch_&quot;</span> <span class="keywordflow">in</span> file_name:</div>
-<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;            launch_script = file_name</div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160; </div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    </div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    launch_script = <span class="keywordtype">None</span></div>
+<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;    <span class="keywordflow">for</span> file_name <span class="keywordflow">in</span> file_names:</div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;        <span class="keywordflow">if</span> <span class="stringliteral">&quot;launch_&quot;</span> <span class="keywordflow">in</span> file_name:</div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;            launch_script = file_name</div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    <span class="keywordflow">if</span> launch_script <span class="keywordflow">is</span> <span class="keywordtype">None</span>:</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;        print(<span class="stringliteral">&quot;[FAIL] : No launch_*.sh script found in Application/.&quot;</span>)</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">False</span></div>
 <div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;    command = (board_deploy + <span class="stringliteral">&quot;/Application/&quot;</span> + launch_script + <span class="stringliteral">&quot; &quot;</span> +</div>
 <div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;               board_deploy + <span class="stringliteral">&quot; &quot;</span> + os.path.basename(model_path) + <span class="stringliteral">&quot; &quot;</span> +</div>
 <div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;               os.path.basename(label_file))</div>
