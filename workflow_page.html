@@ -174,8 +174,13 @@ $(document).ready(function(){initNavTree('workflow_page.html',''); initResizable
   <text x="500" y="50" text-anchor="middle" font-size="8"
         fill="#9d174d" font-family="sans-serif">memory pool config</text>
 
-  <!-- Arrow down to step 1 -->
-  <line x1="340" y1="60" x2="340" y2="82" stroke="#94a3b8"
+  <!-- Fan-in: all 4 input files converge into Step 1 -->
+  <line x1="80"  y1="60" x2="80"  y2="70" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="220" y1="60" x2="220" y2="70" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="360" y1="60" x2="360" y2="70" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="500" y1="60" x2="500" y2="70" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="80"  y1="70" x2="500" y2="70" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="340" y1="70" x2="340" y2="82" stroke="#94a3b8"
         stroke-width="1" marker-end="url(#arr)"/>
 
   <!-- STEP 1: parse + validate -->
@@ -235,13 +240,13 @@ $(document).ready(function(){initNavTree('workflow_page.html',''); initResizable
     output: _signed.bin @ 0x70100000 &amp; weights @ 0x70380000
   </text>
 
-  <line x1="340" y1="308" x2="340" y2="326" stroke="#38a169"
+  <line x1="340" y1="308" x2="340" y2="316" stroke="#38a169"
         stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- STEP 5: board -->
-  <rect x="220" y="326" width="240" height="10" rx="4"
+  <rect x="200" y="316" width="280" height="22" rx="6"
         fill="#68d391" stroke="#38a169" stroke-width="0.8"/>
-  <text x="340" y="334" text-anchor="middle" font-size="8"
+  <text x="340" y="331" text-anchor="middle" font-size="9"
         font-weight="700" fill="#064e3b" font-family="sans-serif">
     Board running — toggle boot switches LEFT → power cycle
   </text>
@@ -494,7 +499,10 @@ $(document).ready(function(){initNavTree('workflow_page.html',''); initResizable
       <p style="color:#4a5568;font-size:0.9em;line-height:1.8;margin:0 0 14px 0;">
         <code>common_deploy.py</code> first copies the generated files into the
         CubeIDE project (via the <code>templates</code> list in the
-        <code>.conf</code> file), then runs three tools in sequence.
+        <code>.conf</code> file), then runs three tools in sequence —
+        STM32CubeIDE for the headless build, STM32SigningTool for the signed
+        binary, and STM32CubeProgrammer twice (once for the firmware at
+        <code>0x70100000</code>, once for the weights at <code>0x70380000</code>).
         The compilation takes 2–5 minutes on first build; subsequent builds
         are faster due to incremental compilation.
       </p>
@@ -574,7 +582,7 @@ $(document).ready(function(){initNavTree('workflow_page.html',''); initResizable
             <li>Live camera preview on LCD</li>
             <li>Skeleton overlay on detected person</li>
             <li>Real-time update (&lt;50 ms latency)</li>
-            <li>Welcome message on screen</li>
+            <li>Welcome screen visible on first boot</li>
           </ul>
         </div>
         <div style="background:#fff5f5;border:1px solid #e94560;border-radius:8px;
