@@ -166,7 +166,7 @@ $(document).ready(function(){initNavTree('stm32ai__main_8py_source.html',''); in
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                                        float_model_path=float_model_path)</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : Neither quantization dataset nor training set are provided! &#39;</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;              <span class="stringliteral">&#39;Using fake data to quantize the model. The model performances will not be accurate.&#39;</span>)</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;              <span class="stringliteral">&#39;Using fake data to quantize the model. The model performance will not be accurate.&#39;</span>)</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        quantized_model_path = <a class="code" href="namespacequantize.html">quantize</a>(cfg=cfg, fake=<span class="keyword">True</span>)</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    print(<span class="stringliteral">&#39;[INFO] : Quantization complete.&#39;</span>)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
@@ -179,7 +179,7 @@ $(document).ready(function(){initNavTree('stm32ai__main_8py_source.html',''); in
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    print(<span class="stringliteral">&#39;[INFO] : Deployment complete.&#39;</span>)</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="comment"># Remind the user to toggle boot switches on the STM32N6570-DK after flashing</span></div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">if</span> cfg.deployment.hardware_setup.board == <span class="stringliteral">&quot;STM32N6570-DK&quot;</span>:</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : Please on STM32N6570-DK toggle the boot switches to the left and power cycle the board.&#39;</span>)</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : On STM32N6570-DK, please toggle the boot switches to the left and power cycle the board.&#39;</span>)</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
 <div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="namespacestm32ai__main.html#a38bbc61827d08e317cbfe48366d5e041">  130</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacestm32ai__main.html#a38bbc61827d08e317cbfe48366d5e041">chain_eqeb</a>(cfg: DictConfig = <span class="keywordtype">None</span>, float_model_path: str = <span class="keywordtype">None</span>,</div>
@@ -273,7 +273,7 @@ $(document).ready(function(){initNavTree('stm32ai__main_8py_source.html',''); in
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                                        float_model_path=float_model_path)</div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : Neither quantization dataset nor training set are provided! &#39;</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;              <span class="stringliteral">&#39;Using fake data to quantize the model. The model performances will not be accurate.&#39;</span>)</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;              <span class="stringliteral">&#39;Using fake data to quantize the model. The model performance will not be accurate.&#39;</span>)</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        quantized_model_path = <a class="code" href="namespacequantize.html">quantize</a>(cfg=cfg, fake=<span class="keyword">True</span>)</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    print(<span class="stringliteral">&#39;[INFO] : Quantization complete.&#39;</span>)</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
@@ -509,7 +509,7 @@ $(document).ready(function(){initNavTree('stm32ai__main_8py_source.html',''); in
 <div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            <a class="code" href="namespacedeploy.html">deploy</a>(cfg=configs)</div>
 <div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : Deployment complete.&#39;</span>)</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordflow">if</span> configs.deployment.hardware_setup.board == <span class="stringliteral">&quot;STM32N6570-DK&quot;</span>:</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            print(<span class="stringliteral">&#39;[INFO] : Please on STM32N6570-DK toggle the boot switches to the left and power cycle the board.&#39;</span>)</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            print(<span class="stringliteral">&#39;[INFO] : On STM32N6570-DK, please toggle the boot switches to the left and power cycle the board.&#39;</span>)</div>
 <div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160; </div>
 <div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;    <span class="keywordflow">elif</span> mode == <span class="stringliteral">&#39;quantization&#39;</span>:</div>
 <div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        <span class="comment"># Select calibration data source</span></div>
@@ -524,8 +524,8 @@ $(document).ready(function(){initNavTree('stm32ai__main_8py_source.html',''); in
 <div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;            input_ds = <span class="keywordtype">None</span></div>
 <div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;            fake = <span class="keyword">True</span></div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;            print(<span class="stringliteral">&#39;[INFO] : Neither quantization dataset or training set are provided! &#39;</span></div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;                  <span class="stringliteral">&#39;Using fake data to quantize the model. The model performances will not be accurate.&#39;</span>)</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;            print(<span class="stringliteral">&#39;[INFO] : Neither quantization dataset nor training set are provided! &#39;</span></div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;                  <span class="stringliteral">&#39;Using fake data to quantize the model. The model performance will not be accurate.&#39;</span>)</div>
 <div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        <a class="code" href="namespacequantize.html">quantize</a>(cfg=configs, quantization_ds=input_ds, fake=fake)</div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        print(<span class="stringliteral">&#39;[INFO] : Quantization complete.&#39;</span>)</div>
 <div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160; </div>

@@ -159,7 +159,8 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
   <div style="text-align:center;">
     <img src="https://shequ.stmicroelectronics.cn/data/attachment/forum/202501/24/164207wzmpocfj7z12m326.jpg"
          alt="STM32N6570-DK top view"
-         style="width:100%;border-radius:10px;border:1px solid #e2e8f0;
+         style="width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center;
+                border-radius:10px;border:1px solid #e2e8f0;
                 box-shadow:0 4px 16px rgba(0,0,0,0.1);"/>
     <div style="color:#718096;font-size:0.8em;margin-top:8px;">
       STM32N6570-DK &mdash; Top view
@@ -168,7 +169,8 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
   <div style="text-align:center;">
     <img src="https://community.st.com/t5/image/serverpage/image-id/118701iA487CC6FA5D228C3/image-size/large/is-moderation-mode/true?v=v2&px=999"
          alt="STM32N6570-DK bottom view"
-         style="width:100%;border-radius:10px;border:1px solid #e2e8f0;
+         style="width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center;
+                border-radius:10px;border:1px solid #e2e8f0;
                 box-shadow:0 4px 16px rgba(0,0,0,0.1);"/>
     <div style="color:#718096;font-size:0.8em;margin-top:8px;">
       STM32N6570-DK &mdash; Bottom view
@@ -237,7 +239,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         font-weight="600" fill="#68d391" font-family="sans-serif">OctoFlash</text>
   <text x="232" y="91" text-anchor="middle" font-size="8"
         fill="#4ade80" font-family="sans-serif">128 MB (weights)</text>
-  <line x1="272" y1="82" x2="270" y2="155" stroke="#38a169"
+  <line x1="272" y1="82" x2="285" y2="118" stroke="#38a169"
         stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arr)"/>
 
   <!-- PSRAM -->
@@ -247,7 +249,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         font-weight="600" fill="#90cdf4" font-family="sans-serif">HexaRAM</text>
   <text x="448" y="91" text-anchor="middle" font-size="8"
         fill="#bfdbfe" font-family="sans-serif">32 MB (LCD buf)</text>
-  <line x1="410" y1="82" x2="410" y2="155" stroke="#63b3ed"
+  <line x1="410" y1="82" x2="395" y2="118" stroke="#63b3ed"
         stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arr)"/>
 
   <!-- LCD -->
@@ -257,7 +259,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         font-weight="600" fill="#f6e05e" font-family="sans-serif">LCD 5&quot;</text>
   <text x="260" y="297" text-anchor="middle" font-size="8"
         fill="#fde68a" font-family="sans-serif">800×480 touch</text>
-  <line x1="260" y1="270" x2="305" y2="220" stroke="#d69e2e"
+  <line x1="260" y1="270" x2="305" y2="222" stroke="#d69e2e"
         stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arr)"/>
 
   <!-- Camera connector -->
@@ -267,7 +269,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         font-weight="600" fill="#c4b5fd" font-family="sans-serif">Camera</text>
   <text x="420" y="297" text-anchor="middle" font-size="8"
         fill="#ddd6fe" font-family="sans-serif">MIPI CSI-2</text>
-  <line x1="420" y1="270" x2="375" y2="220" stroke="#9f7aea"
+  <line x1="420" y1="270" x2="375" y2="222" stroke="#9f7aea"
         stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arr)"/>
 
   <!-- STLINK -->
@@ -281,31 +283,35 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         stroke-width="0.8" marker-end="url(#arr)"/>
 
   <!-- Labels outside board — LEFT -->
-  <text x="20"  y="76"  font-size="9" font-weight="600"
-        fill="#38a169" font-family="sans-serif" text-anchor="start">
+  <text x="140" y="76"  font-size="9" font-weight="600"
+        fill="#38a169" font-family="sans-serif" text-anchor="end">
     XSPI2 — model weights
   </text>
-  <text x="20"  y="88"  font-size="8" fill="#718096"
-        font-family="sans-serif">Mapped at 0x70000000</text>
+  <text x="140" y="88"  font-size="8" fill="#718096"
+        font-family="sans-serif" text-anchor="end">Mapped at 0x70000000</text>
+  <line x1="145" y1="82" x2="180" y2="82" stroke="#38a169"
+        stroke-width="0.6" stroke-dasharray="3 2"/>
 
-  <text x="20"  y="170" font-size="9" font-weight="600"
-        fill="#a0aec0" font-family="sans-serif">USB-C + SWD</text>
-  <text x="20"  y="182" font-size="8" fill="#718096"
-        font-family="sans-serif">Flash &amp; debug</text>
-  <line x1="120" y1="178" x2="192" y2="178" stroke="#718096"
+  <text x="140" y="170" font-size="9" font-weight="600"
+        fill="#a0aec0" font-family="sans-serif" text-anchor="end">USB-C + SWD</text>
+  <text x="140" y="182" font-size="8" fill="#718096"
+        font-family="sans-serif" text-anchor="end">Flash &amp; debug</text>
+  <line x1="145" y1="176" x2="180" y2="176" stroke="#718096"
         stroke-width="0.6" stroke-dasharray="3 2"/>
 
   <!-- Labels outside board — RIGHT -->
-  <text x="510" y="76"  font-size="9" font-weight="600"
+  <text x="540" y="76"  font-size="9" font-weight="600"
         fill="#63b3ed" font-family="sans-serif">XSPI1 — LCD buffer</text>
-  <text x="510" y="88"  font-size="8" fill="#718096"
+  <text x="540" y="88"  font-size="8" fill="#718096"
         font-family="sans-serif">Mapped at 0x90000000</text>
+  <line x1="500" y1="82" x2="535" y2="82" stroke="#63b3ed"
+        stroke-width="0.6" stroke-dasharray="3 2"/>
 
-  <text x="510" y="290" font-size="9" font-weight="600"
+  <text x="540" y="290" font-size="9" font-weight="600"
         fill="#9f7aea" font-family="sans-serif">B-CAMS-IMX module</text>
-  <text x="510" y="302" font-size="8" fill="#718096"
+  <text x="540" y="302" font-size="8" fill="#718096"
         font-family="sans-serif">plugs into connector</text>
-  <line x1="500" y1="290" x2="470" y2="285" stroke="#9f7aea"
+  <line x1="500" y1="296" x2="535" y2="296" stroke="#9f7aea"
         stroke-width="0.6" stroke-dasharray="3 2"/>
 
   <!-- Boot switches callout -->
@@ -405,7 +411,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
       MIPI CSI-2 is a serial differential protocol that transmits pixel data
       at very high bandwidth with very few wires. Once the data arrives at the
       MCU, it is processed by the <strong>DCMIPP</strong> — a dedicated hardware
-      block described in Section 2.5 — which handles format conversion,
+      block described in Section 2.6 — which handles format conversion,
       cropping, and routing to memory without CPU involvement.
     </p>
     <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
@@ -450,7 +456,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         letter-spacing="1">STM32N657X0H3Q — System On Chip</text>
 
   <!-- Cortex-M55 -->
-  <rect x="36" y="56" width="160" height="90" rx="8"
+  <rect x="36" y="56" width="160" height="100" rx="8"
         fill="#1e1e4a" stroke="#63b3ed" stroke-width="1"/>
   <text x="116" y="80" text-anchor="middle" font-size="10"
         font-weight="700" fill="#90cdf4" font-family="sans-serif">Cortex-M55</text>
@@ -470,7 +476,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         fill="#93c5fd" font-family="sans-serif">Cache I/D 32 KB each</text>
 
   <!-- Neural-ART NPU -->
-  <rect x="216" y="56" width="200" height="90" rx="8"
+  <rect x="216" y="56" width="200" height="100" rx="8"
         fill="#2d0a2a" stroke="#e94560" stroke-width="1.2"/>
   <text x="316" y="80" text-anchor="middle" font-size="10"
         font-weight="700" fill="#fc8181" font-family="sans-serif">Neural-ART NPU</text>
@@ -490,7 +496,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         fill="#f9a8d4" font-family="sans-serif">10× STRENG (stream engine)</text>
 
   <!-- Memory subsystem -->
-  <rect x="436" y="56" width="208" height="90" rx="8"
+  <rect x="436" y="56" width="208" height="100" rx="8"
         fill="#0a2a0a" stroke="#38a169" stroke-width="1"/>
   <text x="540" y="80" text-anchor="middle" font-size="10"
         font-weight="700" fill="#68d391" font-family="sans-serif">Memory Subsystem</text>
@@ -502,9 +508,9 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
         fill="#14532d" stroke="#4ade80" stroke-width="0.6"/>
   <text x="590" y="107" text-anchor="middle" font-size="8"
         fill="#86efac" font-family="sans-serif">AXI Cache NPU</text>
-  <rect x="446" y="124" width="188" height="20" rx="3"
+  <rect x="446" y="130" width="188" height="20" rx="3"
         fill="#052e16" stroke="#6ee7b7" stroke-width="0.5"/>
-  <text x="540" y="137" text-anchor="middle" font-size="8"
+  <text x="540" y="143" text-anchor="middle" font-size="8"
         fill="#86efac" font-family="sans-serif">XSPI1 / XSPI2 controllers</text>
 
   <!-- H264 + GPU -->
@@ -567,7 +573,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
       Not a GPU. Not a general-purpose accelerator.
       A fixed-function hardware block designed specifically for CNN inference —
       with dedicated units for convolution, pooling, and activation.
-      We will dissect it in detail in Section 2.4.
+      We will dissect it in detail in Section 2.5.
     </p>
   </div>
   <div style="background:#f0fff4;border:1px solid #38a169;border-top:3px solid #38a169;
@@ -1014,7 +1020,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
 </div>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  The <strong>DCMIPP</strong> (Digital Camera Memory Interface and Processing Pipeline)
+  The <strong>DCMIPP</strong> (Digital Camera Memory Interface Pixel Pipeline)
   is a dedicated hardware block that sits between the MIPI CSI-2 camera interface
   and the MCU's memory. Its key feature for our project is the ability to run
   <strong>two simultaneous output pipes</strong> from a single camera input.
@@ -1152,7 +1158,7 @@ $(document).ready(function(){initNavTree('hardware_page.html',''); initResizable
 
 <!-- NPU offload bars -->
 <div style="margin:0 0 24px 0;">
-<svg width="100%" viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 212" xmlns="http://www.w3.org/2000/svg">
   <!-- MoveNet -->
   <text x="40" y="40" font-size="11" font-weight="600"
         fill="#1a1a2e" font-family="sans-serif">

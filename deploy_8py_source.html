@@ -189,7 +189,7 @@ $(document).ready(function(){initNavTree('deploy_8py_source.html',''); initResiz
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    print(<span class="stringliteral">&quot;[INFO] : Generating C header file for Getting Started...&quot;</span>)</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">if</span> stm32ai_serie.upper() == <span class="stringliteral">&quot;STM32H7&quot;</span>:</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="comment"># STM32H7 deployment is handled by a different function, not supported here</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">raise</span> ValueError()</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;STM32H7 is not supported in this deployment flow.&quot;</span>)</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <a class="code" href="namespacegen__h__file.html#a48544178c8a1711024320d51cf46dd94">gen_h_user_file_n6</a>(config=cfg, quantized_model_path=model_path)</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
@@ -205,7 +205,7 @@ $(document).ready(function(){initNavTree('deploy_8py_source.html',''); initResiz
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordflow">raise</span> TypeError(</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="stringliteral">&quot;The hardware selected in cfg.deployment.hardware_setup.board is not supported yet!\n&quot;</span></div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                <span class="stringliteral">&quot;Please choose one of the following boards: &quot;</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="stringliteral">&quot;`stmaic_STM32N6570-DK.conf` or `stmaic_NUCLEO-N657X0-Q.conf`.&quot;</span>)</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="stringliteral">&quot;`STM32N6570-DK` or `NUCLEO-N657X0-Q`.&quot;</span>)</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        </div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <a class="code" href="namespacecommon__deploy.html#abba85e8917e8ac57e4b1e4e9cfda7528">stm32ai_deploy_stm32n6</a>(</div>
@@ -237,7 +237,7 @@ $(document).ready(function(){initNavTree('deploy_8py_source.html',''); initResiz
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">else</span>:</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keywordflow">raise</span> TypeError(</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            <span class="stringliteral">&quot;Options for cfg.deployment.hardware_setup.serie and cfg.deployment.IDE not supported yet!\n&quot;</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            <span class="stringliteral">&quot;Only options are respectively `STM32N6` and `GCC`.&quot;</span>)</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            <span class="stringliteral">&quot;The only supported combination is serie=`STM32N6` and IDE=`gcc`.&quot;</span>)</div>
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
 <div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="namespacedeploy.html#ade035e1e35eba041fb59e073ff2d91cb">  198</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacedeploy.html#ade035e1e35eba041fb59e073ff2d91cb">deploy_mpu</a>(cfg: DictConfig = <span class="keywordtype">None</span>, model_path_to_deploy: Optional[str] = <span class="keywordtype">None</span>,</div>

@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('gen__h__file_8py_source.html',''); ini
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">except</span> OSError <span class="keyword">as</span> error:</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        print(error)</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    TFLite_Detection_PostProcess_id = <span class="keyword">False</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">with</span> open(os.path.join(path, <span class="stringliteral">&quot;app_config.h&quot;</span>), <span class="stringliteral">&quot;wt&quot;</span>) <span class="keyword">as</span> f:</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        f.write(<span class="stringliteral">&quot;/**\n&quot;</span>)</div>
@@ -176,7 +176,7 @@ $(document).ready(function(){initNavTree('gen__h__file_8py_source.html',''); ini
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">elif</span> params.general.model_type == <span class="stringliteral">&quot;yolo_mpe&quot;</span>:</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            f.write(<span class="stringliteral">&quot;#define POSTPROCESS_TYPE POSTPROCESS_MPE_YOLO_V8_UF\n\n&quot;</span>)</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">raise</span> TypeError(<span class="stringliteral">&quot;please select one supported post processing options: heatmaps_spe or yolo_mpe&quot;</span>)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;Please select one supported post-processing option: heatmaps_spe or yolo_mpe.&quot;</span>)</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        f.write(<span class="stringliteral">&quot;#define NN_HEIGHT     ({})\n&quot;</span>.format(int(input_shape[1])))</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        f.write(<span class="stringliteral">&quot;#define NN_WIDTH      ({})\n&quot;</span>.format(int(input_shape[2])))</div>
@@ -206,7 +206,7 @@ $(document).ready(function(){initNavTree('gen__h__file_8py_source.html',''); ini
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            f.write(<span class="stringliteral">&quot;#define AI_POSE_PP_CONF_THRESHOLD              ({})\n&quot;</span>.format(float(params.postprocessing.kpts_conf_thresh)))</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            f.write(<span class="stringliteral">&quot;#define AI_POSE_PP_POSE_KEYPOINTS_NB           ({})\n&quot;</span>.format(int(nb_kpt)))</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;model_type not supported&quot;</span>)</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keywordflow">raise</span> ValueError(f<span class="stringliteral">&quot;model_type not supported: {params.general.model_type}&quot;</span>)</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        f.write(<span class="stringliteral">&#39;/* Display */\n&#39;</span>)</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        f.write(<span class="stringliteral">&#39;#define WELCOME_MSG_0       &quot;Single/multi pose estimation - Hand landmark&quot;\n&#39;</span>)</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        f.write(<span class="stringliteral">&#39;#define WELCOME_MSG_1       &quot;{}&quot;\n&#39;</span>.format(os.path.basename(params.general.model_path)))</div>
@@ -217,7 +217,7 @@ $(document).ready(function(){initNavTree('gen__h__file_8py_source.html',''); ini
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        f.write(<span class="stringliteral">&quot;\n&quot;</span>)</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        f.write(<span class="stringliteral">&quot;#endif      /* APP_CONFIG */\n&quot;</span>)</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">return</span> TFLite_Detection_PostProcess_id, quantized_model_path</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
 <div class="ttc" id="anamespacegen__h__file_html_a48544178c8a1711024320d51cf46dd94"><div class="ttname"><a href="namespacegen__h__file.html#a48544178c8a1711024320d51cf46dd94">gen_h_file.gen_h_user_file_n6</a></div><div class="ttdeci">None gen_h_user_file_n6(DictConfig config=None, str quantized_model_path=None)</div><div class="ttdef"><b>Definition:</b> <a href="gen__h__file_8py_source.html#l00023">gen_h_file.py:23</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

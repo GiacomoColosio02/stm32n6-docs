@@ -160,7 +160,7 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
 
 <!-- DIAGRAMMA: Cloud vs Edge -->
 <div style="margin:24px 0 32px 0;">
-<svg width="100%" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5"
             markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -170,84 +170,107 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
   </defs>
 
   <!-- CLOUD SIDE -->
-  <rect x="20" y="20" width="290" height="180" rx="12"
+  <rect x="20" y="20" width="290" height="220" rx="12"
         fill="#f0f7ff" stroke="#4a90e2" stroke-width="1" stroke-dasharray="6 3"/>
-  <text x="165" y="46" text-anchor="middle" font-size="11"
+  <text x="165" y="42" text-anchor="middle" font-size="11"
         font-weight="700" fill="#2b6cb0" font-family="sans-serif"
         letter-spacing="1.5">CLOUD COMPUTING</text>
 
-  <rect x="40" y="58" width="80" height="40" rx="6"
+  <!-- Camera -->
+  <rect x="40" y="60" width="70" height="36" rx="6"
         fill="#dbeafe" stroke="#4a90e2" stroke-width="0.8"/>
-  <text x="80" y="82" text-anchor="middle" font-size="11"
+  <text x="75" y="82" text-anchor="middle" font-size="11"
         fill="#1e40af" font-family="sans-serif">&#128247; Camera</text>
 
-  <line x1="120" y1="78" x2="165" y2="78" stroke="#4a90e2"
+  <!-- data arrow -->
+  <line x1="110" y1="78" x2="130" y2="78" stroke="#4a90e2"
         stroke-width="1.2" marker-end="url(#arr)" stroke-dasharray="4 3"/>
-  <text x="142" y="70" text-anchor="middle" font-size="9"
+  <text x="120" y="72" text-anchor="middle" font-size="9"
         fill="#718096" font-family="sans-serif">data</text>
 
-  <rect x="165" y="58" width="80" height="40" rx="6"
+  <!-- Internet -->
+  <rect x="130" y="60" width="80" height="36" rx="6"
         fill="#dbeafe" stroke="#4a90e2" stroke-width="0.8"/>
-  <text x="205" y="74" text-anchor="middle" font-size="10"
+  <text x="170" y="76" text-anchor="middle" font-size="10"
         fill="#1e40af" font-family="sans-serif">&#127760; Internet</text>
-  <text x="205" y="88" text-anchor="middle" font-size="9"
+  <text x="170" y="88" text-anchor="middle" font-size="9"
         fill="#3b82f6" font-family="sans-serif">~100ms</text>
 
-  <line x1="245" y1="78" x2="280" y2="78" stroke="#4a90e2"
+  <!-- arrow down to server -->
+  <line x1="170" y1="96" x2="170" y2="122" stroke="#4a90e2"
         stroke-width="1.2" marker-end="url(#arr)" stroke-dasharray="4 3"/>
 
-  <rect x="160" y="128" width="100" height="52" rx="8"
+  <!-- Cloud Server -->
+  <rect x="130" y="122" width="80" height="50" rx="8"
         fill="#bfdbfe" stroke="#3b82f6" stroke-width="1"/>
-  <text x="210" y="148" text-anchor="middle" font-size="11"
+  <text x="170" y="140" text-anchor="middle" font-size="11"
         font-weight="600" fill="#1e3a8a" font-family="sans-serif">&#9729; Cloud</text>
-  <text x="210" y="162" text-anchor="middle" font-size="9"
+  <text x="170" y="154" text-anchor="middle" font-size="9"
         fill="#1e40af" font-family="sans-serif">Server</text>
-  <text x="210" y="174" text-anchor="middle" font-size="9"
+  <text x="170" y="166" text-anchor="middle" font-size="9"
         fill="#e94560" font-family="sans-serif">Latency: HIGH</text>
 
+  <!-- arrow down to result -->
+  <line x1="170" y1="172" x2="170" y2="194" stroke="#4a90e2"
+        stroke-width="1.2" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+
+  <!-- Result: delayed -->
+  <rect x="110" y="194" width="120" height="34" rx="8"
+        fill="#dbeafe" stroke="#4a90e2" stroke-width="0.8"/>
+  <text x="170" y="209" text-anchor="middle" font-size="10"
+        font-weight="600" fill="#1e40af" font-family="sans-serif">Result: delayed</text>
+  <text x="170" y="221" text-anchor="middle" font-size="9"
+        fill="#3b82f6" font-family="sans-serif">Needs connection</text>
+
   <!-- EDGE SIDE -->
-  <rect x="370" y="20" width="290" height="180" rx="12"
+  <rect x="370" y="20" width="290" height="220" rx="12"
         fill="#f0fff4" stroke="#38a169" stroke-width="1" stroke-dasharray="6 3"/>
-  <text x="515" y="46" text-anchor="middle" font-size="11"
+  <text x="515" y="42" text-anchor="middle" font-size="11"
         font-weight="700" fill="#276749" font-family="sans-serif"
         letter-spacing="1.5">EDGE COMPUTING</text>
 
-  <rect x="390" y="58" width="80" height="40" rx="6"
+  <!-- Camera -->
+  <rect x="395" y="60" width="70" height="36" rx="6"
         fill="#d1fae5" stroke="#38a169" stroke-width="0.8"/>
   <text x="430" y="82" text-anchor="middle" font-size="11"
         fill="#065f46" font-family="sans-serif">&#128247; Camera</text>
 
-  <line x1="470" y1="78" x2="510" y2="78" stroke="#38a169"
+  <!-- data arrow -->
+  <line x1="465" y1="78" x2="485" y2="78" stroke="#38a169"
         stroke-width="1.2" marker-end="url(#arr)"/>
-  <text x="490" y="70" text-anchor="middle" font-size="9"
+  <text x="475" y="72" text-anchor="middle" font-size="9"
         fill="#718096" font-family="sans-serif">data</text>
 
-  <rect x="510" y="58" width="90" height="52" rx="8"
+  <!-- MCU + NPU -->
+  <rect x="485" y="54" width="90" height="50" rx="8"
         fill="#6ee7b7" stroke="#059669" stroke-width="1"/>
-  <text x="555" y="78" text-anchor="middle" font-size="11"
+  <text x="530" y="72" text-anchor="middle" font-size="11"
         font-weight="600" fill="#064e3b" font-family="sans-serif">&#9889; MCU</text>
-  <text x="555" y="92" text-anchor="middle" font-size="9"
+  <text x="530" y="86" text-anchor="middle" font-size="9"
         fill="#065f46" font-family="sans-serif">+ NPU</text>
-  <text x="555" y="104" text-anchor="middle" font-size="9"
+  <text x="530" y="98" text-anchor="middle" font-size="9"
         fill="#059669" font-family="sans-serif">Latency: &lt;20ms</text>
 
-  <rect x="440" y="140" width="130" height="44" rx="8"
+  <!-- arrow down to result -->
+  <line x1="530" y1="104" x2="530" y2="134" stroke="#38a169"
+        stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- Result: immediate -->
+  <rect x="470" y="134" width="120" height="50" rx="8"
         fill="#d1fae5" stroke="#38a169" stroke-width="0.8"/>
-  <text x="505" y="158" text-anchor="middle" font-size="10"
+  <text x="530" y="156" text-anchor="middle" font-size="10"
         font-weight="600" fill="#065f46" font-family="sans-serif">Result: immediate</text>
-  <text x="505" y="174" text-anchor="middle" font-size="9"
+  <text x="530" y="172" text-anchor="middle" font-size="9"
         fill="#047857" font-family="sans-serif">No internet needed</text>
-  <line x1="555" y1="110" x2="505" y2="140" stroke="#38a169"
-        stroke-width="1" marker-end="url(#arr)"/>
 
   <!-- VS -->
-  <circle cx="340" cy="110" r="20" fill="#1a1a2e"/>
-  <text x="340" y="115" text-anchor="middle" font-size="12"
+  <circle cx="340" cy="130" r="20" fill="#1a1a2e"/>
+  <text x="340" y="135" text-anchor="middle" font-size="12"
         font-weight="700" fill="white" font-family="sans-serif">VS</text>
 </svg>
 <div style="text-align:center;color:#718096;font-size:0.8em;margin-top:6px;">
-  Cloud computing sends raw data to remote servers (high latency);
-  edge computing processes data locally on the device (real-time).
+  Cloud computing sends raw data to remote servers across two network hops (high latency);
+  edge computing processes data locally on the device, in a single step (real-time).
 </div>
 </div>
 
@@ -384,71 +407,74 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
   <text x="539" y="134" text-anchor="middle" font-size="9"
         fill="#831843" font-family="sans-serif">600 GOPS INT8</text>
 
-  <!-- PERIPHERALS block -->
-  <rect x="40" y="176" width="600" height="76" rx="8"
-        fill="#fffbea" stroke="#d69e2e" stroke-width="1"/>
-  <text x="340" y="196" text-anchor="middle" font-size="11"
-        font-weight="700" fill="#92400e" font-family="sans-serif">
-    Peripherals &amp; I/O
-  </text>
-  <rect x="55"  y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="92"  y="226" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">GPIO/UART</text>
-  <rect x="145" y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="182" y="220" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">MIPI CSI-2</text>
-  <text x="182" y="232" text-anchor="middle" font-size="8"
-        fill="#92400e" font-family="sans-serif">(camera)</text>
-  <rect x="235" y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="272" y="226" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">Timers</text>
-  <rect x="325" y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="362" y="220" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">ADC / DAC</text>
-  <text x="362" y="232" text-anchor="middle" font-size="8"
-        fill="#92400e" font-family="sans-serif">(analog)</text>
-  <rect x="415" y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="452" y="220" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">LTDC</text>
-  <text x="452" y="232" text-anchor="middle" font-size="8"
-        fill="#92400e" font-family="sans-serif">(display)</text>
-  <rect x="505" y="204" width="74" height="36" rx="4"
-        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
-  <text x="542" y="220" text-anchor="middle" font-size="9"
-        fill="#78350f" font-family="sans-serif">XSPI</text>
-  <text x="542" y="232" text-anchor="middle" font-size="8"
-        fill="#92400e" font-family="sans-serif">(flash/RAM)</text>
+  <!-- bus lines from upper blocks down to AXI Bus -->
+  <line x1="130" y1="152" x2="130" y2="176" stroke="#a0aec0"
+        stroke-width="0.8" stroke-dasharray="3 2"/>
+  <line x1="330" y1="152" x2="330" y2="176" stroke="#a0aec0"
+        stroke-width="0.8" stroke-dasharray="3 2"/>
+  <line x1="540" y1="152" x2="540" y2="176" stroke="#a0aec0"
+        stroke-width="0.8" stroke-dasharray="3 2"/>
 
-  <!-- AXI Bus -->
-  <rect x="40" y="272" width="600" height="20" rx="4"
+  <!-- AXI Bus (central) -->
+  <rect x="40" y="176" width="600" height="20" rx="4"
         fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.8"/>
-  <text x="340" y="286" text-anchor="middle" font-size="9"
+  <text x="340" y="190" text-anchor="middle" font-size="9"
         fill="#4a5568" font-family="sans-serif"
         letter-spacing="2">AXI Bus — Internal Communication Highway</text>
 
-  <!-- bus lines up -->
-  <line x1="130" y1="152" x2="130" y2="272" stroke="#a0aec0"
-        stroke-width="0.8" stroke-dasharray="3 2"/>
-  <line x1="330" y1="152" x2="330" y2="272" stroke="#a0aec0"
-        stroke-width="0.8" stroke-dasharray="3 2"/>
-  <line x1="540" y1="152" x2="540" y2="272" stroke="#a0aec0"
-        stroke-width="0.8" stroke-dasharray="3 2"/>
-  <line x1="340" y1="252" x2="340" y2="272" stroke="#a0aec0"
+  <!-- bus line down to Peripherals -->
+  <line x1="340" y1="196" x2="340" y2="220" stroke="#a0aec0"
         stroke-width="0.8" stroke-dasharray="3 2"/>
 
+  <!-- PERIPHERALS block -->
+  <rect x="40" y="220" width="600" height="76" rx="8"
+        fill="#fffbea" stroke="#d69e2e" stroke-width="1"/>
+  <text x="340" y="240" text-anchor="middle" font-size="11"
+        font-weight="700" fill="#92400e" font-family="sans-serif">
+    Peripherals &amp; I/O
+  </text>
+  <rect x="55"  y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="92"  y="270" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">GPIO/UART</text>
+  <rect x="145" y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="182" y="264" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">MIPI CSI-2</text>
+  <text x="182" y="276" text-anchor="middle" font-size="8"
+        fill="#92400e" font-family="sans-serif">(camera)</text>
+  <rect x="235" y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="272" y="270" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">Timers</text>
+  <rect x="325" y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="362" y="264" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">ADC / DAC</text>
+  <text x="362" y="276" text-anchor="middle" font-size="8"
+        fill="#92400e" font-family="sans-serif">(analog)</text>
+  <rect x="415" y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="452" y="264" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">LTDC</text>
+  <text x="452" y="276" text-anchor="middle" font-size="8"
+        fill="#92400e" font-family="sans-serif">(display)</text>
+  <rect x="505" y="248" width="74" height="36" rx="4"
+        fill="#fef3c7" stroke="#fbbf24" stroke-width="0.7"/>
+  <text x="542" y="264" text-anchor="middle" font-size="9"
+        fill="#78350f" font-family="sans-serif">XSPI</text>
+  <text x="542" y="276" text-anchor="middle" font-size="8"
+        fill="#92400e" font-family="sans-serif">(flash/RAM)</text>
+
   <!-- external world -->
-  <text x="340" y="318" text-anchor="middle" font-size="10"
+  <text x="340" y="322" text-anchor="middle" font-size="10"
         fill="#718096" font-family="sans-serif">
     &#8595; Pins connect to: camera, display, sensors, flash memory, USB
   </text>
 </svg>
 <div style="text-align:center;color:#718096;font-size:0.8em;margin-top:6px;">
-  Internal architecture of a microcontroller. All components share the AXI bus.
+  Internal architecture of a microcontroller. The AXI bus sits at the centre,
+  connecting compute and memory (above) with peripherals (below).
   The STM32N6 adds a dedicated NPU (Neural-ART) for AI acceleration.
 </div>
 </div>
@@ -582,7 +608,7 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
         fill="#fbcfe8" stroke="#f43f8e" stroke-width="1.2"/>
   <text x="340" y="132" text-anchor="middle" font-size="12"
         font-weight="700" fill="#831843" font-family="sans-serif">
-    Deep Learning &#9654;
+    Deep Learning
   </text>
   <text x="340" y="148" text-anchor="middle" font-size="10"
         fill="#9d174d" font-family="sans-serif">
@@ -796,7 +822,8 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
   running AI inference (neural network forward pass) directly on an embedded device
   at the edge, without sending data to the cloud.
   The promise is compelling — real-time response, offline operation, data privacy —
-  but realising it requires solving a fundamental size mismatch.
+  but realising it requires solving two fundamental problems: size and hardware
+  compatibility with the target accelerator.
 </p>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
   When we talk about <strong>deployment</strong> in this context, we mean the complete
@@ -819,65 +846,65 @@ $(document).ready(function(){initNavTree('introduction_page.html',''); initResiz
   4 bytes per value.
 </p>
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:16px;">
-  Consider MobileNet, a model deliberately designed to be small:
-  it still has roughly 4 million parameters. At 4 bytes each,
-  that is <strong>16 MB just for the weights</strong>.
-  A typical microcontroller has a few hundred KB of RAM.
-  The size mismatch is not marginal — it is a factor of 50 to 100.
+  Consider <strong>MoveNet Lightning</strong>, a model deliberately designed for
+  edge deployment: in float32 it still weighs ~11.7 MB. And size is only half
+  the problem. The STM32N6 NPU (Neural-ART) only accelerates
+  <strong>integer operations</strong>: a float32 model cannot use it at all —
+  every layer falls back to the general-purpose CPU, making real-time inference
+  impossible for any non-trivial model.
 </p>
 
 <!-- SIZE MISMATCH DIAGRAM -->
 <div style="margin:0 0 24px 0;">
-<svg width="100%" viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 180" xmlns="http://www.w3.org/2000/svg">
   <!-- FP32 model bar -->
-  <text x="40" y="36" font-size="11" font-weight="600"
+  <text x="40" y="26" font-size="11" font-weight="600"
         fill="#1a1a2e" font-family="sans-serif">
     MoveNet Lightning (float32)
   </text>
-  <rect x="40" y="44" width="520" height="32" rx="6"
+  <rect x="40" y="34" width="520" height="32" rx="6"
         fill="#fca5a5" stroke="#ef4444" stroke-width="0.8"/>
-  <text x="300" y="65" text-anchor="middle" font-size="11"
+  <text x="300" y="55" text-anchor="middle" font-size="11"
         font-weight="700" fill="#7f1d1d" font-family="sans-serif">
-    ~11.7 MB (float32 — does NOT fit)
+    ~11.7 MB (float32)
+  </text>
+  <text x="40" y="82" font-size="10" font-weight="600"
+        fill="#b91c1c" font-family="sans-serif">
+    &#10006; NPU-incompatible &mdash; every layer falls back to the CPU
   </text>
 
+  <!-- 4x label -->
+  <text x="572" y="44" font-size="12" font-weight="700"
+        fill="#e94560" font-family="sans-serif">4×</text>
+  <text x="572" y="58" font-size="9" fill="#718096"
+        font-family="sans-serif">larger</text>
+
   <!-- INT8 model bar -->
-  <text x="40" y="106" font-size="11" font-weight="600"
+  <text x="40" y="108" font-size="11" font-weight="600"
         fill="#1a1a2e" font-family="sans-serif">
     MoveNet Lightning (INT8 quantized)
   </text>
-  <rect x="40" y="114" width="130" height="32" rx="6"
+  <rect x="40" y="116" width="130" height="32" rx="6"
         fill="#6ee7b7" stroke="#059669" stroke-width="0.8"/>
-  <text x="105" y="135" text-anchor="middle" font-size="11"
+  <text x="105" y="137" text-anchor="middle" font-size="11"
         font-weight="700" fill="#064e3b" font-family="sans-serif">
-    2.9 MB &#10003;
+    2.9 MB
   </text>
-
-  <!-- MCU RAM line -->
-  <line x1="40" y1="155" x2="110" y2="155" stroke="#38a169"
-        stroke-width="1.5"/>
-  <line x1="110" y1="150" x2="110" y2="160" stroke="#38a169"
-        stroke-width="1.5"/>
-  <text x="75" y="152" text-anchor="middle" font-size="9"
-        fill="#276749" font-family="sans-serif">OctoFlash limit</text>
-
-  <!-- 4x label -->
-  <text x="570" y="72" font-size="12" font-weight="700"
-        fill="#e94560" font-family="sans-serif">4×</text>
-  <text x="570" y="86" font-size="9" fill="#718096"
-        font-family="sans-serif">too large</text>
+  <text x="40" y="164" font-size="10" font-weight="600"
+        fill="#047857" font-family="sans-serif">
+    &#10003; NPU-ready &mdash; 600 GOPS hardware acceleration
+  </text>
 </svg>
 <div style="text-align:center;color:#718096;font-size:0.8em;margin-top:4px;">
-  Quantization shrinks the model from 11.7 MB to 2.9 MB — small enough for OctoFlash.
+  Quantization shrinks the model 4× <em>and</em> unlocks NPU acceleration —
+  the STM32N6 Neural-ART only accelerates INT8 operations.
 </div>
 </div>
 
 <p style="color:#4a5568;font-size:0.93em;line-height:1.9;margin-bottom:24px;">
-  Beyond memory, float32 arithmetic is also slow on hardware that was not
-  designed for it. The STM32N6 NPU only accelerates <strong>integer operations</strong>.
-  A float32 model cannot use the NPU at all — every layer would fall back to the
-  CPU, making real-time inference impossible for any non-trivial model.
-  The solution is quantization.
+  The solution is <strong>quantization</strong>: convert the weights from
+  float32 to INT8. The model shrinks 4× <em>and</em> becomes NPU-compatible
+  in a single step.
 </p>
 
 <!-- 3.2 QUANTIZATION -->

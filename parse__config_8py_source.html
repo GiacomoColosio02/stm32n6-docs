@@ -193,11 +193,11 @@ $(document).ready(function(){initNavTree('parse__config_8py_source.html',''); in
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">elif</span> cfg.hardware_type == <span class="stringliteral">&quot;MPU&quot;</span>:</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">if</span> cfg.preprocessing.resizing.aspect_ratio <span class="keywordflow">not</span> <span class="keywordflow">in</span> [<span class="stringliteral">&quot;fit&quot;</span>,<span class="stringliteral">&quot;padding&quot;</span>]:</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;The only value of aspect_ratio that are supported at this point are &#39;fit&#39; and &#39;padding&#39;&quot;</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;The only values of aspect_ratio that are supported at this point are &#39;fit&#39; and &#39;padding&#39;&quot;</span></div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                            <span class="stringliteral">&quot;(&#39;crop&#39; is not supported).&quot;</span>)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">raise</span> ValueError(<span class="stringliteral">&quot;The only value of aspect_ratio that are supported at this point are &#39;fit&#39; and &#39;padding&#39;&quot;</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                <span class="stringliteral">&quot;(&#39;crop&#39; is not supported).&quot;</span>)</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">raise</span> ValueError(f<span class="stringliteral">&quot;Unsupported hardware_type: {cfg.hardware_type}. &quot;</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                         <span class="stringliteral">&quot;Expected &#39;MCU&#39; or &#39;MPU&#39;.&quot;</span>)</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="comment"># Check resizing interpolation value</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    interpolation_methods = [<span class="stringliteral">&quot;bilinear&quot;</span>, <span class="stringliteral">&quot;nearest&quot;</span>, <span class="stringliteral">&quot;area&quot;</span>, <span class="stringliteral">&quot;lanczos3&quot;</span>, <span class="stringliteral">&quot;lanczos5&quot;</span>, <span class="stringliteral">&quot;bicubic&quot;</span>, <span class="stringliteral">&quot;gaussian&quot;</span>,</div>
@@ -225,7 +225,7 @@ $(document).ready(function(){initNavTree('parse__config_8py_source.html',''); in
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="stringliteral">    Arguments:</span></div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="stringliteral">        cfg (DictConfig): The entire configuration file as a DefaultMunch dictionary.</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="stringliteral">        config_dict (Dict): The entire configuration file as a regular Python dictionary.</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="stringliteral">    Returns:</span></div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="stringliteral">        None</span></div>
@@ -372,19 +372,19 @@ $(document).ready(function(){initNavTree('parse__config_8py_source.html',''); in
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    <span class="comment">#For MPU, check if online benchmarking is activated</span></div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <span class="keywordflow">if</span> cfg.operation_mode <span class="keywordflow">in</span> mode_groups.benchmarking:</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keywordflow">if</span> <span class="stringliteral">&quot;STM32MP&quot;</span> <span class="keywordflow">in</span> cfg.benchmarking.board :</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        <span class="keywordflow">if</span> <span class="stringliteral">&quot;STM32MP&quot;</span> <span class="keywordflow">in</span> cfg.benchmarking.board:</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            <span class="keywordflow">if</span> cfg.operation_mode == <span class="stringliteral">&quot;benchmarking&quot;</span> <span class="keywordflow">and</span> not(cfg.tools.stm32ai.on_cloud):</div>
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                print(<span class="stringliteral">&quot;Target selected for benchmark :&quot;</span>, cfg.benchmarking.board)</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                print(<span class="stringliteral">&quot;Offline benchmarking for MPU is not yet available please use online benchmarking&quot;</span>)</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                print(<span class="stringliteral">&quot;Offline benchmarking for MPU is not yet available. Please use online benchmarking.&quot;</span>)</div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                exit(1)</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="comment"># Benchmarking section parsing</span></div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordflow">if</span> cfg.operation_mode <span class="keywordflow">in</span> mode_groups.benchmarking:</div>
 <div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        parse_benchmarking_section(cfg.benchmarking)</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keywordflow">if</span> cfg.hardware_type == <span class="stringliteral">&quot;MPU&quot;</span> :</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keywordflow">if</span> cfg.hardware_type == <span class="stringliteral">&quot;MPU&quot;</span>:</div>
 <div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            <span class="keywordflow">if</span> <span class="keywordflow">not</span> (cfg.tools.stm32ai.on_cloud):</div>
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                print(<span class="stringliteral">&quot;Target selected for benchmark :&quot;</span>, cfg.benchmarking.board)</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                print(<span class="stringliteral">&quot;Offline benchmarking for MPU is not yet available please use online benchmarking&quot;</span>)</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                print(<span class="stringliteral">&quot;Offline benchmarking for MPU is not yet available. Please use online benchmarking.&quot;</span>)</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                exit(1)</div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="comment"># Deployment section parsing</span></div>

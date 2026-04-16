@@ -171,12 +171,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 1: stm32ai_main.py -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:transparent;"></div>
     <div style="width:14px;height:14px;background:#4299e1;border-radius:50%;
-                border:3px solid #bee3f8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:linear-gradient(#4299e1,#4299e1);
-                margin:4px 0;"></div>
+                border:3px solid #bee3f8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#4299e1;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#ebf8ff;border:1px solid #4299e1;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -214,7 +214,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <!-- ARROW LABEL -->
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#4299e1;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -227,11 +227,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 2: parse_config.py -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#9f7aea;"></div>
     <div style="width:14px;height:14px;background:#9f7aea;border-radius:50%;
-                border:3px solid #e9d8fd;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#9f7aea;margin:4px 0;"></div>
+                border:3px solid #e9d8fd;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#9f7aea;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#faf5ff;border:1px solid #9f7aea;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -261,8 +262,8 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
       <div style="background:#1a1a2e;border-radius:6px;padding:8px 14px;
                   font-family:monospace;font-size:0.8em;color:#e2e8f0;">
         <span style="color:#68d391;">get_config</span>(cfg) &rarr;
-        <span style="color:#c4b5fd;">_parse_dataset_section</span>() +
-        <span style="color:#c4b5fd;">_parse_preprocessing_section</span>() +
+        <span style="color:#c4b5fd;">_parse_dataset_section</span>() &rarr;
+        <span style="color:#c4b5fd;">_parse_preprocessing_section</span>() &rarr;
         <span style="color:#c4b5fd;">_parse_deployment_section</span>()
       </div>
     </div>
@@ -270,7 +271,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#9f7aea;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -281,11 +282,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 3: deploy.py -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#4299e1;"></div>
     <div style="width:14px;height:14px;background:#4299e1;border-radius:50%;
-                border:3px solid #bee3f8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#4299e1;margin:4px 0;"></div>
+                border:3px solid #bee3f8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#4299e1;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#ebf8ff;border:1px solid #4299e1;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -306,7 +308,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
         </a>
       </div>
       <p style="color:#2c5282;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
-        Orchestrates the four deployment steps: generates <code>app_config.h</code>,
+        Orchestrates the deployment steps: generates <code>app_config.h</code>,
         selects the board <code>.conf</code> file, calls
         <code>stm32ai_deploy_stm32n6()</code> in <code>common_deploy.py</code>
         which invokes ST Edge AI Core and STM32CubeIDE in sequence.
@@ -323,7 +325,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <!-- FORK: two parallel arrows -->
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#4299e1;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -334,11 +336,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- FORK NODE: gen_h_file + common_deploy side by side -->
 <div style="display:flex;gap:0;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#ed8936;"></div>
     <div style="width:14px;height:14px;background:#ed8936;border-radius:50%;
-                border:3px solid #feebc8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#ed8936;margin:4px 0;"></div>
+                border:3px solid #feebc8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#ed8936;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
 
       <!-- gen_h_file.py -->
@@ -371,7 +374,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
         <div style="display:flex;justify-content:space-between;align-items:flex-start;
                     flex-wrap:wrap;gap:6px;margin-bottom:8px;">
           <span style="font-family:monospace;font-weight:700;color:#92400e;font-size:0.9em;">
-            common_deploy.py
+            common/common_deploy.py
           </span>
           <a href="namespacecommon__deploy.html"
              style="background:#ed8936;color:white;padding:3px 10px;border-radius:5px;
@@ -392,7 +395,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#ed8936;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -403,11 +406,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 5: external_memory_mgt.py -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#ed8936;"></div>
     <div style="width:14px;height:14px;background:#ed8936;border-radius:50%;
-                border:3px solid #feebc8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#ed8936;margin:4px 0;"></div>
+                border:3px solid #feebc8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#ed8936;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#fffbea;border:1px solid #ed8936;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -445,7 +449,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <!-- CONDITIONAL: quantize.py (only for chain_qd) -->
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#38a169;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -456,11 +460,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#38a169;"></div>
     <div style="width:14px;height:14px;background:#38a169;border-radius:50%;
-                border:3px solid #c6f6d5;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#38a169;margin:4px 0;"></div>
+                border:3px solid #c6f6d5;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#38a169;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#f0fff4;border:1px solid #38a169;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -500,7 +505,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <!-- Supporting files -->
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#718096;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -509,9 +514,10 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:32px;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#718096;"></div>
     <div style="width:14px;height:14px;background:#718096;border-radius:50%;
-                border:3px solid #e2e8f0;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:transparent;margin:4px 0;"></div>
+                border:3px solid #e2e8f0;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:transparent;"></div>
   </div>
   <div style="flex:1;">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
@@ -619,11 +625,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 1: main.c -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:transparent;"></div>
     <div style="width:14px;height:14px;background:#e94560;border-radius:50%;
-                border:3px solid #fed7e2;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#e94560;margin:4px 0;"></div>
+                border:3px solid #fed7e2;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#e94560;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#fff5f5;border:1px solid #e94560;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -661,7 +668,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#e94560;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -672,11 +679,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 2: app_config.h -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#ed8936;"></div>
     <div style="width:14px;height:14px;background:#ed8936;border-radius:50%;
-                border:3px solid #feebc8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#ed8936;margin:4px 0;"></div>
+                border:3px solid #feebc8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#ed8936;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#fffbea;border:1px solid #ed8936;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -710,22 +718,23 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#ed8936;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
-              color:#ed8936;line-height:20px;">calls at startup &darr;</div>
+              color:#ed8936;line-height:20px;">included by &darr;</div>
 </div>
 
 
 <!-- NODE 3: app_camerapipeline.c -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#9f7aea;"></div>
     <div style="width:14px;height:14px;background:#9f7aea;border-radius:50%;
-                border:3px solid #e9d8fd;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#9f7aea;margin:4px 0;"></div>
+                border:3px solid #e9d8fd;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#9f7aea;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#faf5ff;border:1px solid #9f7aea;border-radius:10px;
                 padding:18px 22px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
@@ -765,7 +774,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#9f7aea;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -776,11 +785,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 4: NPU (not a file, but a key step) -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#e94560;"></div>
     <div style="width:14px;height:14px;background:#e94560;border-radius:50%;
-                border:3px solid #fed7e2;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#e94560;margin:4px 0;"></div>
+                border:3px solid #fed7e2;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#e94560;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="background:#1a1a2e;border:1px solid #e94560;border-radius:10px;
                 padding:18px 22px;">
       <div style="font-family:monospace;font-weight:700;color:#fc8181;font-size:1em;
@@ -794,7 +804,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
       <p style="color:#a0aec0;font-size:0.88em;line-height:1.7;margin:0 0 10px 0;">
         Not a file you wrote — part of the ll_aton runtime library injected
         by <code>common_deploy.py</code>. Executes all 75 epochs in sequence:
-        loads EC blob for each NPU epoch into hardware registers,
+        loads the EC blob for each of the 71 NPU epochs into hardware registers,
         calls <code>ll_sw_*</code> functions for the 4 SW epochs.
         Input: npuRAM4 (192×192×3 camera frame).
         Output: npuRAM5 (48×48×13 heatmaps, float32).
@@ -809,7 +819,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 </div>
 
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#e94560;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -820,11 +830,12 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 <!-- NODE 5: display_spe.c / display_mpe.c -->
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:0;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#4299e1;"></div>
     <div style="width:14px;height:14px;background:#4299e1;border-radius:50%;
-                border:3px solid #bee3f8;flex-shrink:0;margin-top:20px;"></div>
-    <div style="width:2px;flex:1;background:#4299e1;margin:4px 0;"></div>
+                border:3px solid #bee3f8;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:#4299e1;"></div>
   </div>
-  <div style="flex:1;margin-bottom:6px;">
+  <div style="flex:1;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
 
       <div style="background:#ebf8ff;border:1px solid #4299e1;border-radius:10px;
@@ -868,7 +879,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
                      border-radius:6px;font-weight:600;">YOLOv8 decoder</span>
         <p style="color:#2c5282;font-size:0.85em;line-height:1.6;margin:8px 0 0 0;">
           Reads YOLOv8 detection output (bounding boxes + 17 keypoints per person).
-          Applies NMS result filtering by confidence and IoU thresholds.
+          Applies NMS filtering by confidence and IoU thresholds.
           Draws bounding boxes and 17-keypoint COCO skeletons on LCD
           for all detected persons simultaneously.
         </p>
@@ -879,7 +890,7 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <!-- Supporting C files -->
 <div style="display:flex;gap:0;margin-bottom:0;">
-  <div style="width:14px;margin-right:20px;display:flex;justify-content:center;">
+  <div style="width:20px;margin-right:20px;display:flex;justify-content:center;">
     <div style="width:2px;height:20px;background:#718096;"></div>
   </div>
   <div style="padding-left:4px;font-family:monospace;font-size:0.8em;
@@ -888,11 +899,13 @@ $(document).ready(function(){initNavTree('part2_page.html',''); initResizable();
 
 <div style="display:flex;gap:0;align-items:stretch;margin-bottom:40px;">
   <div style="display:flex;flex-direction:column;align-items:center;margin-right:20px;">
+    <div style="width:2px;height:20px;background:#718096;"></div>
     <div style="width:14px;height:14px;background:#718096;border-radius:50%;
-                border:3px solid #e2e8f0;flex-shrink:0;margin-top:20px;"></div>
+                border:3px solid #e2e8f0;flex-shrink:0;"></div>
+    <div style="width:2px;flex:1;background:transparent;"></div>
   </div>
   <div style="flex:1;">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:20px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
       <div style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;padding:12px;">
         <div style="font-family:monospace;font-weight:700;color:#4a5568;font-size:0.85em;
