@@ -413,11 +413,9 @@ $(document).ready(function(){initNavTree('casestudies_page.html',''); initResiza
   epoch N &nbsp;&nbsp;&nbsp;EC &nbsp;&nbsp;<span style="color:#68d391;"># Q/K/V linear projection (Conv) — NPU</span><br/>
   epoch N+1 &nbsp;-SW- Transpose &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <span style="color:#fc8181;"># Q·Kᵀ requires reshape before MatMul</span><br/>
-  epoch N+2 &nbsp;?? &nbsp;&nbsp;<span style="color:#a0aec0;"># internal routing</span><br/>
   epoch N+3 &nbsp;EC &nbsp;&nbsp;<span style="color:#68d391;"># MatMul partial — NPU</span><br/>
   epoch N+4 &nbsp;-SW- Conv &times;4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <span style="color:#fc8181;"># attention heads: non-standard conv pattern</span><br/>
-  epoch N+8 &nbsp;EC &nbsp;&nbsp;<span style="color:#68d391;"># — NPU</span><br/>
   epoch N+9 &nbsp;-SW- Softmax &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <span style="color:#fc8181;"># attention weights — no NPU Softmax unit</span><br/>
   epoch N+10 -SW- Split &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
