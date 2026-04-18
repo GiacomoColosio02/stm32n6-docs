@@ -27,11 +27,35 @@ Run from the repo root: `python3 tools/reorg.py`.
 
 Idempotent: running it a second time is a no-op.
 """
+import os
 import re
 import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def atomic_write(path: Path, text: str, encoding: str = "utf-8") -> None:
+    """Write atomically via a sibling .tmp + os.replace, so an interrupted run
+    never leaves a half-written file."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    try:
+        tmp.write_text(text, encoding=encoding)
+        os.replace(tmp, path)
+    except OSError as e:
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+        raise OSError(f"failed to write {path}: {e}") from e
+
+
+def safe_read(path: Path, encoding: str = "utf-8") -> str:
+    try:
+        return path.read_text(encoding=encoding)
+    except OSError as e:
+        raise OSError(f"failed to read {path}: {e}") from e
 
 # ---- hard-coded classification (extend here when adding non-Doxygen assets) --
 UI_ICONS = {
@@ -60,8 +84,8 @@ def move_if_exists(src: Path, dst_dir: Path):
 def reorganise_files():
     """Move files from root into subfolders. No-op for already-moved files."""
     # CSS
-    for name in ("doxygen.css", "navtree.css", "tabs.css"):
-        move_if_exists(ROOT / name, ROOT / "css")
+    for p in list(ROOT.glob("*.css")):
+        move_if_exists(p, ROOT / "css")
     # JS
     for p in list(ROOT.glob("*.js")):
         move_if_exists(p, ROOT / "js")
@@ -110,10 +134,10 @@ def rewrite_root_pages(moves: dict):
     for f in targets:
         if not f.exists():
             continue
-        text = f.read_text(encoding="utf-8")
+        text = safe_read(f)
         new = pat.sub(sub, text)
         if new != text:
-            f.write_text(new, encoding="utf-8")
+            atomic_write(f, new)
             count += 1
     return count
 
@@ -128,10 +152,10 @@ def rewrite_css_urls():
     )
     count = 0
     for f in css_dir.glob("*.css"):
-        text = f.read_text(encoding="utf-8")
+        text = safe_read(f)
         new = pat.sub(lambda m: f'url({m.group("q")}../images/ui/{m.group(2)}{m.group("q")})', text)
         if new != text:
-            f.write_text(new, encoding="utf-8")
+            atomic_write(f, new)
             count += 1
     return count
 
@@ -146,10 +170,10 @@ def rewrite_svg_hrefs():
     pat = re.compile(r'(xlink:href=")(?![./]|https?:|#)([^"#]+\.html)(["#])')
     count = 0
     for f in graphs_dir.glob("*.svg"):
-        text = f.read_text(encoding="utf-8")
+        text = safe_read(f)
         new = pat.sub(r"\1../\2\3", text)
         if new != text:
-            f.write_text(new, encoding="utf-8")
+            atomic_write(f, new)
             count += 1
     return count
 
@@ -162,7 +186,7 @@ def patch_navtree_js():
     f = ROOT / "js" / "navtree.js"
     if not f.exists():
         return False
-    text = f.read_text(encoding="utf-8")
+    text = safe_read(f)
     before = text
     text = text.replace(
         "script.src = scriptName+'.js';",
@@ -177,7 +201,7 @@ def patch_navtree_js():
         "'<img src=\"'+relpath+'images/ui/sync_on.png\"",
     )
     if text != before:
-        f.write_text(text, encoding="utf-8")
+        atomic_write(f, text)
         return True
     return False
 
