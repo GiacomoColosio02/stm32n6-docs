@@ -1350,14 +1350,12 @@ dl.section dd {
 {
 	font: 120% Tahoma, Arial,sans-serif;
 	margin: 0px;
-	padding: 0px;
+	padding: 0px 0px 12px 0px;
 }
 
 #projectnumber
 {
-	font: 50% Tahoma, Arial,sans-serif;
-	margin: 0px;
-	padding: 0px;
+	display: none;
 }
 
 #titlearea

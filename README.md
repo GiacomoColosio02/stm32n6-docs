@@ -3,13 +3,13 @@
 > **Politecnico di Milano** — Multidisciplinary Project A.Y. 2024-2025  
 > Supervised by Prof. Cristina Silvano & Dr. Marco Ronzani
 
-## 🌐 Live Documentation
+## Live Documentation
 
 **[→ Open the full documentation website](https://GiacomoColosio02.github.io/stm32n6-docs/)**
 
 ---
 
-## 📖 About
+## About
 
 This repository hosts the auto-generated Doxygen documentation for the STM32N6 NPU neural network deployment project.
 
@@ -23,7 +23,7 @@ We deployed three neural network architectures on the **STM32N6570-DK** board eq
 
 ---
 
-## 📂 Documentation Structure
+## Documentation Structure
 
 | Section | Description |
 |---------|-------------|
@@ -39,7 +39,7 @@ We deployed three neural network architectures on the **STM32N6570-DK** board eq
 
 ---
 
-## 👥 Authors
+## Authors
 
 | Name | Student ID |
 |------|-----------|
@@ -50,7 +50,7 @@ We deployed three neural network architectures on the **STM32N6570-DK** board eq
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Board:** STM32N6570-DK (ARM Cortex-M55 @ 800 MHz + Neural-ART NPU)
 - **Tools:** ST Edge AI Core v2.1.0, STM32CubeIDE 1.18.1, STM32CubeProgrammer
@@ -59,7 +59,7 @@ We deployed three neural network architectures on the **STM32N6570-DK** board eq
 
 ---
 
-## 🗂️ Repository Layout
+## Repository Layout
 
 Doxygen outputs everything flat by default (hundreds of files in root). We post-process that output into tidy subfolders:
 
@@ -74,7 +74,7 @@ Doxygen outputs everything flat by default (hundreds of files in root). We post-
 | `search/` | untouched — Doxygen ships it as a subfolder |
 | *root* | HTML pages, `README.md` |
 
-## 🔁 Regenerating the Docs
+## Regenerating the Docs
 
 Doxygen overwrites its output directory on every run, so the reorganisation would be lost without a post-processing step. Run:
 
