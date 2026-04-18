@@ -325,11 +325,6 @@ function selectAndHighlight(hash,n)
     $(n.itemDiv).addClass('selected');
     $(n.itemDiv).attr('id','selected');
   }
-  if ($('#nav-tree-contents .item:first').hasClass('selected')) {
-    $('#nav-sync').css('top','30px');
-  } else {
-    $('#nav-sync').css('top','5px');
-  }
   showRoot();
 }
 
