@@ -41,12 +41,12 @@ We deployed three neural network architectures on the **STM32N6570-DK** board eq
 
 ## Authors
 
-| Name | Student ID |
-|------|-----------|
-| Giacomo Colosio | 10775899 |
-| Sebastiano Colosio | 10555512 |
-| Patrizio Acquadro | 11087897 |
-| Tito Nicola Drugman | 10847631 |
+| Name |
+|------|
+| Giacomo Colosio |
+| Sebastiano Colosio |
+| Patrizio Acquadro |
+| Tito Nicola Drugman |
 
 ---
 
