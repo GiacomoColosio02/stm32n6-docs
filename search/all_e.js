@@ -3,7 +3,7 @@ var searchData=
   ['parse_5fconfig_169',['parse_config',['../namespaceparse__config.html',1,'']]],
   ['parse_5fconfig_2epy_170',['parse_config.py',['../parse__config_8py.html',1,'']]],
   ['parser_171',['parser',['../namespacestm32ai__main.html#a7d733ccead2208fed95a6d8d859c6c0a',1,'stm32ai_main']]],
-  ['part_201_20—_20narrative_20explanations_172',['Part 1 — Narrative Explanations',['../part1_page.html',1,'']]],
+  ['part_201_20—_20tutorial_172',['Part 1 — Tutorial',['../part1_page.html',1,'']]],
   ['part_202_20—_20code_20reference_173',['Part 2 — Code Reference',['../part2_page.html',1,'']]],
   ['part_203_20—_20module_20groups_174',['Part 3 — Module Groups',['../part3_page.html',1,'']]],
   ['part2_5fnew_2edox_175',['part2_new.dox',['../part2__new_8dox.html',1,'']]],
